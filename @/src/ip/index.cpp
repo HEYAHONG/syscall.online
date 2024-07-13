@@ -77,7 +77,8 @@ int main(int argc,const char *argv[],const char *env[])
                 writer.write(std::cout,root);
             }
         }
-    } catch(...)
+    }
+    catch(...)
     {
         return EXIT_FAILURE;
     }
