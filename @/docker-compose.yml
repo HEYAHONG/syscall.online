@@ -1,0 +1,19 @@
+version: "3"
+
+networks:
+  syscall:
+    external: false
+
+services:
+  server:
+    image: syscall.online
+    container_name: syscall.online
+    restart: always
+    privileged: true
+    volumes:
+      - ./static:/var/www/html/static:rw
+      - ./src:/usr/src:rw
+    networks:
+      - syscall
+    ports:
+      - "65080:80"
