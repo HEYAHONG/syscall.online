@@ -43,6 +43,11 @@ int main(int argc,const char *argv[],const char *env[])
             //当forceapi=true时不跳转
             need_redirect=false;
         }
+        if(env.getRequestMethod()=="POST")
+        {
+            //当采用POST方法时不跳转
+            need_redirect=false;
+        }
         if(need_redirect)
         {
             //执行跳转
