@@ -51,7 +51,7 @@ int main(int argc,const char *argv[],const char *env[])
         else
         {
             //输出接口信息（JSON格式）
-            std::cout<<cgicc::HTTPContentHeader("application/json")<<std::endl;
+            std::cout<<cgicc::HTTPContentHeader("application/json");
             Json::Value root(Json::objectValue);
 
             {
