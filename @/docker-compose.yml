@@ -17,4 +17,3 @@ services:
       - syscall
     ports:
       - "65080:80"
-name: syscall_online
