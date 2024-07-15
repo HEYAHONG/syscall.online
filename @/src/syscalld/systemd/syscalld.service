@@ -1,0 +1,13 @@
+[Unit]
+Description=syscalld Service
+Documentation=http://syscall.online
+After=network.target nss-lookup.target
+
+[Service]
+User=www-data
+ExecStart=/usr/local/bin/syscalld
+Restart=on-failure
+RestartPreventExitStatus=23
+
+[Install]
+WantedBy=multi-user.target

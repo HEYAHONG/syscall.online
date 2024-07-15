@@ -1,11 +1,12 @@
 
-.PHONY:all index.cgi
+.PHONY:all syscalld
 
-all:index.cgi
+all:syscalld
 
-index.cgi:
+syscalld:
 	if [ -d build ];then rm -rf build; else true;fi
 	mkdir -p  build && cd build && cmake -G "CodeBlocks - Unix Makefiles" ../ && cmake --build .
 
-install:index.cgi
+install:syscalld
 	cd build && cmake --build . -t install
+	systemctl enable syscalld
