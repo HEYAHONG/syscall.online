@@ -1,12 +1,10 @@
 
 .PHONY:all index.cgi
 
-all:install
+all:index.cgi
 
 index.cgi:
-	g++ --std=c++17 index.cpp -I/usr/include/jsoncpp -ljsoncpp -lcgicc -o index.cgi
+	mkdir -p  build && cd build && cmake -G "CodeBlocks - Unix Makefiles" ../ && cmake --build .
 
 install:index.cgi
-	#安装index.cgi
-	install -d /var/www/html/api/ip/
-	install index.cgi /var/www/html/api/ip/
+	cd build && cmake --build . -t install
