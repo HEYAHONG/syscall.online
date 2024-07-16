@@ -73,4 +73,16 @@ bool gv_is_running();
 void gv_set_running(bool _is_running=false);
 
 
+/** \brief
+ *
+ * \param func 初始函数
+ *
+ */
+#define INIT_EXPORT(func)       extern "C" void __gv_add_init_func__(int(*_init)());\
+                                static void init_export()  __attribute__((constructor));\
+                                static void init_export()\
+                                {\
+                                    __gv_add_init_func__(func);\
+                                }
+
 #endif // __GLOBALVARIABLE_H__

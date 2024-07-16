@@ -1,0 +1,6 @@
+file(GLOB C_CXX_SOURCE *.cpp *.c *.h)
+if(DEFINED C_CXX_SOURCE)
+	target_sources(${PROJECT_NAME} PUBLIC ${C_CXX_SOURCE})
+	unset(C_CXX_SOURCE)
+endif()
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

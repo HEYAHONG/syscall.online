@@ -2,6 +2,8 @@
 #include "dbus/dbus.h"
 #include "sysloginfo.h"
 #include "globalvariable.h"
+#include <vector>
+#include <mutex>
 
 #define DBUS_SERVICE_NAME "online.syscall"
 extern "C" void main_stop_running();
@@ -37,6 +39,8 @@ void dbus_interface_init()
     dbus_error_free(&error);
 }
 
+static std::recursive_mutex m_msg_callback_lock;
+static std::vector<dbus_interface_message_callback_t> m_msg_callback;
 void dbus_interface_process()
 {
     if(connection==NULL)
@@ -48,13 +52,23 @@ void dbus_interface_process()
     DBusError error;
     dbus_error_init(&error);
 
-    dbus_connection_read_write_dispatch(connection,10);
+    dbus_connection_read_write_dispatch(connection,1);
     while(true)
     {
         DBusMessage *message = dbus_connection_pop_message(connection);
-
         if(message!=NULL)
         {
+            std::lock_guard<std::recursive_mutex> lock(m_msg_callback_lock);
+            for(auto cb:m_msg_callback)
+            {
+                if(cb!=NULL)
+                {
+                    if(cb(connection,message))
+                    {
+                        break;
+                    }
+                }
+            }
             dbus_message_unref(message);
         }
         else
@@ -73,4 +87,10 @@ void dbus_interface_deinit()
         dbus_connection_unref(connection);
         connection=NULL;
     }
+}
+
+void dbus_interface_register_message_callback(dbus_interface_message_callback_t cb)
+{
+    std::lock_guard<std::recursive_mutex> lock(m_msg_callback_lock);
+    m_msg_callback.push_back(cb);
 }
