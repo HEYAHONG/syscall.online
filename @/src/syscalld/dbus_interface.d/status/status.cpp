@@ -22,7 +22,7 @@ static bool dbus_interface_message_callback(DBusConnection *conn,DBusMessage *ms
             {
                 Json::Value root(Json::objectValue);
                 Json::StyledWriter writer;
-                root["boot_time"]=(Json::UInt64)gv_get_boot_time_point_seconds();
+                root["boottime"]=(Json::UInt64)gv_get_boot_time_point_seconds();
                 root["path"]=dbus_message_get_path(msg);
                 root["timestamp"]=(Json::UInt64)time(NULL);
                 ret=writer.write(root);
