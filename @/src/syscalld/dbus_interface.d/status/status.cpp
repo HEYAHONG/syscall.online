@@ -1,6 +1,7 @@
 #include "dbus_interface.h"
 #include "globalvariable.h"
 #include "sysloginfo.h"
+#include "time.h"
 #include <json/value.h>
 #include <json/writer.h>
 #define DBUS_INTERFACE_NAME "online.syscall"
@@ -23,6 +24,7 @@ static bool dbus_interface_message_callback(DBusConnection *conn,DBusMessage *ms
                 Json::StyledWriter writer;
                 root["boot_time"]=(Json::UInt64)gv_get_boot_time_point_seconds();
                 root["path"]=dbus_message_get_path(msg);
+                root["timestamp"]=(Json::UInt64)time(NULL);
                 ret=writer.write(root);
             }
             const char *retstr=ret.c_str();
