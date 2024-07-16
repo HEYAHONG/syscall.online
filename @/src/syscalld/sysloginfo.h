@@ -1,5 +1,5 @@
-#ifndef DEAMONLOG_H_INCLUDED
-#define DEAMONLOG_H_INCLUDED
+#ifndef SYSLOGINFO_H_INCLUDED
+#define SYSLOGINFO_H_INCLUDED
 
 #ifdef __cplusplus
 extern "C"
@@ -13,17 +13,17 @@ extern "C"
 #endif // LOGI
 
 
-/** \brief DeamonLog初始化
+/** \brief sysloginfo初始化
  *
  *
  */
-void DeamonLog_Init();
+void sysloginfo_init();
 
-/** \brief DeamonLog反初始化
+/** \brief sysloginfo反初始化
  *
  *
  */
-void DeamonLog_Deinit();
+void sysloginfo_deinit();
 
 #ifdef __cplusplus
 }

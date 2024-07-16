@@ -4,20 +4,12 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include "dbus_interface.h"
-#include "DeamonLog.h"
+#include "sysloginfo.h"
+#include "globalvariable.h"
 
-static bool isrunning=true;
-extern "C" void main_stop_running()
-{
-    isrunning=false;
-}
 static void signalHandler(int signum)
 {
-    if(!isrunning)
-    {
-        return;
-    }
-    isrunning=false;
+    gv_set_running(false);
 }
 
 static void init_signal()
@@ -36,11 +28,13 @@ int main()
     //初始化信号
     init_signal();
 
-    DeamonLog_Init();
+    sysloginfo_init();
+
+    gv_init();
 
     dbus_interface_init();
 
-    while(isrunning)
+    while(gv_is_running())
     {
         //默认systemd作为init系统，因此不采用传统守护进程的启动方式(fork()->setsid()->fork()),直接不退出程序
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -49,7 +43,9 @@ int main()
 
     dbus_interface_deinit();
 
-    DeamonLog_Deinit();
+    gv_deinit();
+
+    sysloginfo_deinit();
 
     return 0;
 }

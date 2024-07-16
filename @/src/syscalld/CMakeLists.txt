@@ -35,6 +35,9 @@ target_link_libraries(${PROJECT_NAME} PkgConfig::JSONCPP)
 pkg_check_modules(DBUS REQUIRED IMPORTED_TARGET dbus-1)
 target_link_libraries(${PROJECT_NAME} PkgConfig::DBUS)
 
+#Boost
+find_package(Boost 1.74.0 REQUIRED)
+target_link_libraries(${PROJECT_NAME} Boost::boost)
 
 include(GNUInstallDirs)
 #安装

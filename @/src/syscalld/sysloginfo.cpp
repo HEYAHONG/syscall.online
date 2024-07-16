@@ -1,16 +1,16 @@
-#include "DeamonLog.h"
+#include "sysloginfo.h"
 #include "syslog.h"
 
-void DeamonLog_Init()
+void sysloginfo_init()
 {
     //初始化 syslog
     openlog("syscalld", LOG_NDELAY|LOG_NOWAIT|LOG_PID, LOG_DAEMON);
-    LOGI("DeamonLog Init!");
+    LOGI("sysloginfo Init!");
 }
 
-void DeamonLog_Deinit()
+void sysloginfo_deinit()
 {
-    LOGI("DeamonLog Deinit!");
+    LOGI("sysloginfo Deinit!");
     //关闭syslog
     closelog();
 }
