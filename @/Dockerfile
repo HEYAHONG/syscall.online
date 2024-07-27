@@ -2,7 +2,7 @@ FROM debian:latest
 MAINTAINER HEYAHONG 2229388563@qq.com
 WORKDIR /var/www/html
 ENV DEBIAN_FRONTEND noninteractive
-RUN find /etc/apt -type f  | xargs sed -i "s/deb.debian.org/mirrors.ustc.edu.cn/g"  && apt-get update && apt-get full-upgrade && apt-get install -yyy build-essential cmake gcc g++ dbus libdbus-1-dev libcgicc-dev systemd nginx fcgiwrap make libjsoncpp-dev libboost-all-dev
+RUN find /etc/apt -type f  | xargs sed -i "s/deb.debian.org/mirrors.ustc.edu.cn/g"  && apt-get update && apt-get full-upgrade -yyy && apt-get install -yyy build-essential cmake gcc g++ dbus libdbus-1-dev libcgicc-dev systemd nginx fcgiwrap make libjsoncpp-dev libboost-all-dev
 RUN mkdir -p /var/www/html/static && mkdir /var/www/html/api && systemctl enable fcgiwrap
 COPY src/ /usr/src/
 RUN if [ -f /usr/src/Makefile ]; then make -C /usr/src; else true;fi
