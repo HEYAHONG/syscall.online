@@ -8,4 +8,4 @@ PWD:=$(shell pwd)
 
 install:
 	#安装子项目
-	$(foreach d, $(SUBDIRS), mkdir -p "${d}/build" && cd "${d}/build" &&  emcmake cmake ${d} && cmake --build . --target install; )
+	$(foreach d, $(SUBDIRS),  rm -rf  "${d}/build"; mkdir -p "${d}/build" && cd "${d}/build" &&  emcmake cmake ${d} && cmake --build . --target install; )

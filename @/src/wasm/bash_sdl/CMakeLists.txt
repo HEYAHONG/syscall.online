@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.20)
 #程序名称
-Set(PROJECT_NAME helloworld)
+Set(PROJECT_NAME base_sdl)
 #主版本
 set(PROJECT_MAJOR_VERSION_STR 1)
 #次版本号
@@ -39,9 +39,16 @@ file(GLOB MAIN_CXX_C_FILES *.cpp  *.c *.h)
 add_executable(${PROJECT_NAME}  ${MAIN_CXX_C_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+include(FindPkgConfig)
 #添加线程库
 FIND_PACKAGE(Threads REQUIRED)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}  ${CMAKE_THREAD_LIBS_INIT})
+
+#sdl
+include(FindSDL)
+if(${SDL_FOUND})
+	target_link_libraries(${PROJECT_NAME} SDL::SDL)
+endif()
 
 if(${WASM_BUILD})
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.html ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.js ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.wasm

@@ -18,4 +18,4 @@ syscalld为守护进程，文档路径为<a href="api/syscalld/">syscalld</a>。
 wasm路径：<a href="/wasm/">wasm</a>。
 
 - <a href="/wasm/helloworld/helloworld.html">helloworld</a>:C++语言的helloworld.
-
+- <a href="/wasm/base_sdl/base_sdl.html">base_sdl</a>:WASM的（SDL）图形程序基础测试.
