@@ -3,6 +3,7 @@
 #include <SDL/SDL_keyboard.h>
 #include <thread>
 #include <chrono>
+#include <random>
 #if WASM_BUILD
 #include <assert.h>
 #include <emscripten.h>
@@ -22,6 +23,21 @@ static void DrawBackGround(SDL_Surface *screen)
     //填充纯色背景
     SDL_Rect fullscreen= {0,0,(Uint16)screen_width,(Uint16)screen_height};
     SDL_FillRect(screen, &fullscreen, 0xFF664422);
+}
+//绘制随机方块(50X50)
+static void DrawRandomRect(SDL_Surface *screen)
+{
+    static std::mt19937 generator;
+    Uint16 x=screen_width/50;
+    Uint16 y=screen_width/50;
+    for(Uint16 i=0; i<x; i++)
+    {
+        for(Uint16 j=0; j<y; j++)
+        {
+            SDL_Rect fill= {(int16_t)(50*i),(int16_t)(50*j),50,50};
+            SDL_FillRect(screen, &fill, 0xFF000000|generator());
+        }
+    }
 }
 
 //秒定时器回调
@@ -82,6 +98,9 @@ void loop()
         //开始渲染
         DrawBackGround(screen);
         //TODO:在此处渲染其它元素
+
+        //绘制随机方块
+        DrawRandomRect(screen);
 
         SDL_Flip(screen);
     }
