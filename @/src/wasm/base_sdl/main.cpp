@@ -1,6 +1,6 @@
 #include <stdio.h>
-#include <SDL/SDL.h>
-#include <SDL/SDL_keyboard.h>
+#include <SDL.h>
+#include <SDL_keyboard.h>
 #include <thread>
 #include <chrono>
 #include <random>

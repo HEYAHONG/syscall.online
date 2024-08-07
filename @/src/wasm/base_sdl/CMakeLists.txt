@@ -47,33 +47,39 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}  ${CMAKE_THREAD_LIBS_INIT})
 #sdl
 include(FindSDL)
 if(${SDL_FOUND})
+	include_directories(${SDL_INCLUDE_DIRS})
 	target_link_libraries(${PROJECT_NAME} SDL::SDL)
 endif()
 
 #sdl_image
 include(FindSDL_image)
 if(${SDL_IMAGE_FOUND})
+	include_directories(${SDL_IMAGE_INCLUDE_DIRS})
 	target_link_libraries(${PROJECT_NAME} ${SDL_IMAGE_LIBRARIES})
 endif()
 
 #sdl_mixer
 include(FindSDL_mixer)
 if(${SDL_MIXER_FOUND})
+	include_directories(${SDL_MIXER_INCLUDE_DIRS})
 	target_link_libraries(${PROJECT_NAME} ${SDL_MIXER_LIBRARIES})
 endif()
 #sdl_net
 include(FindSDL_net)
 if(${SDL_NET_FOUND})
+	include_directories(${SDL_NET_INCLUDE_DIRS})
 	target_link_libraries(${PROJECT_NAME} ${SDL_NET_LIBRARIES})
 endif()
 #sdl_sound
 include(FindSDL_sound)
 if(${SDL_SOUND_FOUND})
+	include_directories(${SDL_SOUND_INCLUDE_DIRS})
 	target_link_libraries(${PROJECT_NAME} ${SDL_SOUND_LIBRARIES})
 endif()
 #sdl_ttf
 include(FindSDL_ttf)
 if(${SDL_TTF_FOUND})
+	include_directories(${SDL_TTF_INCLUDE_DIRS})
 	target_link_libraries(${PROJECT_NAME} ${SDL_TTF_LIBRARIES})
 endif()
 
