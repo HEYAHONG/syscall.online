@@ -50,6 +50,33 @@ if(${SDL_FOUND})
 	target_link_libraries(${PROJECT_NAME} SDL::SDL)
 endif()
 
+#sdl_image
+include(FindSDL_image)
+if(${SDL_IMAGE_FOUND})
+	target_link_libraries(${PROJECT_NAME} ${SDL_IMAGE_LIBRARIES})
+endif()
+
+#sdl_mixer
+include(FindSDL_mixer)
+if(${SDL_MIXER_FOUND})
+	target_link_libraries(${PROJECT_NAME} ${SDL_MIXER_LIBRARIES})
+endif()
+#sdl_net
+include(FindSDL_net)
+if(${SDL_NET_FOUND})
+	target_link_libraries(${PROJECT_NAME} ${SDL_NET_LIBRARIES})
+endif()
+#sdl_sound
+include(FindSDL_sound)
+if(${SDL_SOUND_FOUND})
+	target_link_libraries(${PROJECT_NAME} ${SDL_SOUND_LIBRARIES})
+endif()
+#sdl_ttf
+include(FindSDL_ttf)
+if(${SDL_TTF_FOUND})
+	target_link_libraries(${PROJECT_NAME} ${SDL_TTF_LIBRARIES})
+endif()
+
 if(${WASM_BUILD})
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.html ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.js ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.wasm
        DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
