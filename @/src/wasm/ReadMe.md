@@ -10,7 +10,7 @@
 
 需要注意的是除了安装好C/C++开发环境,还需要安装以下库:
 
-- [libsdl](https://libsdl.org/):包括libsdl（版本1）与libsdl2.
+- [libsdl](https://libsdl.org/):包括libsdl（版本1）与libsdl2.注意：某些组件（如SDL _ttf）可能要单独安装,如不能成功编译需要安装缺失的组件。
 
 # 测试
 
