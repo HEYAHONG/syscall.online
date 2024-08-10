@@ -166,7 +166,7 @@ void loop(void)
 int main(int argc, char *argv[])
 {
     {
-        SDL_version version={0};
+        SDL_version version= {0};
         SDL_GetVersion(&version);
         printf("SDL Version:%d,%d,%d\n",version.major,version.minor,version.patch);
     }
