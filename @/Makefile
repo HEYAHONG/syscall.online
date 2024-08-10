@@ -5,6 +5,7 @@
 all:deploy
 
 docker_image:
+	git submodule update --init --recursive
 	if [ -f Dockerfile ]; then docker build -t syscall.online .; else true; fi
 
 docker_image_clean:docker_container_clean
