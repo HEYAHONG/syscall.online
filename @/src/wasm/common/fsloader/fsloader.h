@@ -13,7 +13,7 @@ void fsloader_init();
  * \param saveload bool true=保存,false=加载
  *
  */
-void fsloader_sync(bool saveload=true);
+void fsloader_sync(bool saveload);
 
 #ifdef __cplusplus
 }
