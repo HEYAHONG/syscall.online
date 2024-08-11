@@ -41,7 +41,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(${WASM_BUILD})
 	#设定一些选项
-	target_link_libraries(${PROJECT_NAME} -sSTANDALONE_WASM=1 -sWASM_BIGINT=1 )
+	target_link_libraries(${PROJECT_NAME}  -sWASM_BIGINT=1 )
 endif()
 
 include(FindPkgConfig)
