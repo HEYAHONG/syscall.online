@@ -39,6 +39,11 @@ file(GLOB MAIN_CXX_C_FILES *.cpp  *.c *.h)
 add_executable(${PROJECT_NAME}  ${MAIN_CXX_C_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
+if(${WASM_BUILD})
+	#设定一些选项
+	target_link_libraries(${PROJECT_NAME} -sSTANDALONE_WASM=1 -sWASM_BIGINT=1 )
+endif()
+
 include(FindPkgConfig)
 #添加线程库
 FIND_PACKAGE(Threads REQUIRED)
@@ -83,6 +88,11 @@ if(${SDL_TTF_FOUND})
 	target_link_libraries(${PROJECT_NAME} ${SDL_TTF_LIBRARIES})
 endif()
 
+#添加common_fsloader库文件
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/fsloader common_fsloader EXCLUDE_FROM_ALL)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_fsloader)
+
+include(GNUInstallDirs)
 if(${WASM_BUILD})
 INSTALL(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.html ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.js ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.wasm
        DESTINATION /var/www/html/wasm/${PROJECT_NAME}/

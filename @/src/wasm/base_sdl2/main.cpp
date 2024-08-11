@@ -5,6 +5,7 @@
 #include <emscripten/emscripten.h>
 #endif
 #include "SDL.h"
+#include "fsloader.h"
 
 int done=0;
 static int screen_width=800;
@@ -37,26 +38,6 @@ static void DrawRandomRect()
 }
 
 
-//秒定时器回调
-static bool second_timer_reached=false;
-#ifdef __EMSCRIPTEN__
-//WASM的定时器问题，采用手工延时
-static Uint32 tick_per_second=1;
-#else
-static Uint32 tick_per_second=1000;
-#endif
-Uint32 SDLCALL second_timer_callback(Uint32 interval, void *param)
-{
-    second_timer_reached=true;
-    static Uint32 second=0;
-    second++;
-    printf("second timer callback!second=%d\n",(int)second);
-#ifdef __EMSCRIPTEN__
-//WASM的定时器问题，采用手工延时
-    SDL_Delay(1000);
-#endif
-    return interval;
-}
 
 
 static void quit(int rc)
@@ -141,17 +122,26 @@ void loop(void)
         }
     }
 
-    //秒定时器到达
-    if(second_timer_reached)
     {
-        second_timer_reached=false;
-        //开始渲染
-        SDL_RenderClear(renderer);
-        DrawBackGround();
-        //TODO:在此处渲染其他元素
-        DrawRandomRect();
+        //采用tick实现按秒动作
+        static Uint32 last_tick=0;
+        Uint32 tick= SDL_GetTicks();
+        if(tick-last_tick > 1000)
+        {
+            last_tick=tick;
+            {
+                static Uint32 second=0;
+                second++;
+                printf("second reached!second=%d\n",(int)second);
+            }
+            //开始渲染
+            SDL_RenderClear(renderer);
+            DrawBackGround();
+            //TODO:在此处渲染其他元素
+            DrawRandomRect();
 
-        SDL_RenderPresent(renderer);
+            SDL_RenderPresent(renderer);
+        }
     }
 
 
@@ -165,6 +155,9 @@ void loop(void)
 
 int main(int argc, char *argv[])
 {
+    //加载文件系统(主要进行一些用户操作)
+    fsloader_init();
+
     {
         SDL_version version= {0};
         SDL_GetVersion(&version);
@@ -200,9 +193,6 @@ int main(int argc, char *argv[])
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create renderer: %s\n",SDL_GetError());
         quit(2);
     }
-
-    //设置秒定时器
-    SDL_AddTimer(tick_per_second,second_timer_callback,NULL);
 
 
     /* Main render loop */
