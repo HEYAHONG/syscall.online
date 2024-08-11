@@ -28,6 +28,12 @@ void fsloader_init()
 #ifdef __EMSCRIPTEN__
     emscripten_log(EM_LOG_CONSOLE|EM_LOG_INFO,"%s::fsloader started!",TAG);
     emscripten_log(EM_LOG_CONSOLE|EM_LOG_INFO,"%s::fsloader_source_root:%s!",TAG,FSLOADER_SOURCE_ROOT);
+    {
+        //写入文件
+        EM_ASM(
+            FS.writeFile("fsloader.common.flag", "loaded");
+        );
+    }
     if(fsloader_ls_in_nodejs()==1)
     {
         emscripten_log(EM_LOG_CONSOLE|EM_LOG_INFO,"%s::nodejs environment!",TAG);
@@ -46,10 +52,25 @@ void fsloader_init()
         //挂载IDBFS
         EM_ASM(
             FS.mkdir('/var');
-            FS.mount(IDBFS, { autoPersist:true}, '/var');
+            FS.mount(IDBFS, {autoPersist: true}, '/var');
         );
     }
+    fsloader_sync(false);
 #else
 
+#endif // __EMSCRIPTEN__
+}
+
+void fsloader_sync(bool saveload)
+{
+#ifdef __EMSCRIPTEN__
+    if(saveload)
+    {
+        EM_ASM(FS.syncfs(false, function (err) {}));
+    }
+    else
+    {
+        EM_ASM(FS.syncfs(true, function (err) {}));
+    }
 #endif // __EMSCRIPTEN__
 }
