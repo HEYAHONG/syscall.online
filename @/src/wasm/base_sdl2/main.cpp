@@ -6,6 +6,7 @@
 #endif
 #include "SDL.h"
 #include "fsloader.h"
+#include "font.h"
 
 int done=0;
 static int screen_width=800;
@@ -157,7 +158,9 @@ int main(int argc, char *argv[])
 {
     //加载文件系统(主要进行一些用户操作)
     fsloader_init();
-
+    {
+        printf("font root:%s\n",font_get_root());
+    }
     {
         SDL_version version= {0};
         SDL_GetVersion(&version);

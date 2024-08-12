@@ -1,5 +1,5 @@
 
-#添加common::fsloader库文件
+#添加common_fsloader库文件
 file(GLOB FSLOADER_CXX_C_FILES *.cpp  *.c *.h)
 add_library(common_fsloader STATIC  EXCLUDE_FROM_ALL ${FSLOADER_CXX_C_FILES})
 target_include_directories(common_fsloader PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

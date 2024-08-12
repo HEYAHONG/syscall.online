@@ -9,6 +9,7 @@
 #include <emscripten.h>
 #endif
 #include "fsloader.h"
+#include "font.h"
 
 static bool is_running=true;
 //存储当前的宽与高
@@ -111,6 +112,9 @@ static int main_thread_entry()
 {
     //加载文件系统(主要进行一些用户操作)
     fsloader_init();
+    {
+        printf("font root:%s\n",font_get_root());
+    }
     if(SDL_Init(SDL_INIT_EVERYTHING)<0)
     {
         printf("sdl init  error!\n");

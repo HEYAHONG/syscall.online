@@ -92,11 +92,15 @@ endif()
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/fsloader common_fsloader EXCLUDE_FROM_ALL)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_fsloader)
 
+#添加common_font库文件
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/font common_font)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_font)
+
 include(GNUInstallDirs)
 if(${WASM_BUILD})
-INSTALL(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.html ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.js ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.wasm
-       DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
-)
+	INSTALL(FILES ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.html ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.data ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.js ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.wasm
+	DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
+	)
 endif()
 
 
