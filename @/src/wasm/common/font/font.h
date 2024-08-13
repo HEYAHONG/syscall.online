@@ -18,5 +18,15 @@ const char *font_get_root();
 }
 #endif
 
+#ifdef __cplusplus
+#include <string>
+/** \brief 获取默认字体（通常是找到的第一个字体）
+ *
+ * \return std::string 字体文件名称
+ *
+ */
+std::string font_get_default_font();
+#endif // __cplusplus
+
 #endif // __COMMON_H__
 

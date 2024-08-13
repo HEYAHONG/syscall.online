@@ -113,7 +113,7 @@ static int main_thread_entry()
     //加载文件系统(主要进行一些用户操作)
     fsloader_init();
     {
-        printf("font root:%s\n",font_get_root());
+        printf("font root:%s,default font:%s\n",font_get_root(),font_get_default_font().c_str());
     }
     if(SDL_Init(SDL_INIT_EVERYTHING)<0)
     {

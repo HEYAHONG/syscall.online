@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     //加载文件系统(主要进行一些用户操作)
     fsloader_init();
     {
-        printf("font root:%s\n",font_get_root());
+        printf("font root:%s,default font:%s\n",font_get_root(),font_get_default_font().c_str());
     }
     {
         SDL_version version= {0};
