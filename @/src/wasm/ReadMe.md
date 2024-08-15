@@ -18,3 +18,7 @@
 在调试WASM程序时，可采用编译器自动生成的html代码，直接在浏览器上打开即可。
 
 实际使用时需要自行设计html代码。
+# 相关资料
+
+- [AssemblyScript](http://assemblyscript.org)
+
