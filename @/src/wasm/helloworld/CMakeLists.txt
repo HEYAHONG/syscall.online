@@ -20,7 +20,7 @@ Project(${PROJECT_NAME}	VERSION "${PROJECT_VERSION_STR}")
 Project(${PROJECT_NAME} C CXX)
 
 # 设置C++标准
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 #判断是否为Emscripten
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
@@ -51,6 +51,13 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}  ${CMAKE_THREAD_LIBS_INIT})
 #添加common_fsloader库文件
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/fsloader common_fsloader EXCLUDE_FROM_ALL)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_fsloader)
+
+#添加3rdparty/HCppBox
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/HCppBox HCppBox)
+#启用HCppBox、HRC
+hcppbox_enable(${PROJECT_NAME})
+hrc_enable(${PROJECT_NAME})
+
 
 include(GNUInstallDirs)
 if(${WASM_BUILD})
