@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <SDL.h>
 #include <SDL_keyboard.h>
+#include "SDL_ttf.h"
 #include <thread>
 #include <chrono>
 #include <random>
@@ -120,10 +121,30 @@ static int main_thread_entry()
         printf("sdl init  error!\n");
         return -1;
     }
+    else
+    {
+        TTF_Init();
+    }
     screen = SDL_SetVideoMode(screen_width, screen_height, 32, SDL_HWSURFACE);
     if(screen==NULL)
     {
         return -1;
+    }
+    {
+        DrawBackGround(screen);
+        TTF_Font *font=TTF_OpenFont((std::string(font_get_root())+"/"+font_get_default_font()).c_str(),32);
+        if(font!=NULL)
+        {
+            SDL_Color font_color= {0xff,0xff,0xff};
+            SDL_Surface *surface=TTF_RenderUTF8_Solid(font,"BaseSDL启动中！",font_color);
+            if(surface!=NULL)
+            {
+                SDL_BlitSurface(surface,NULL,screen,NULL);
+                SDL_Flip(screen);
+                SDL_FreeSurface(surface);
+            }
+            TTF_CloseFont(font);
+        }
     }
 
     //设置标题(非WASM情况下有效)
@@ -142,6 +163,7 @@ static int main_thread_entry()
         loop();
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
+    TTF_Quit();
     SDL_Quit();
 #endif
     return 0;

@@ -32,7 +32,7 @@ endif()
 
 if(${WASM_BUILD})
 	set(CMAKE_EXECUTABLE_SUFFIX ".html")
-	add_compile_definitions(WASM_BUILD=1)
+	add_compile_definitions(WASM_BUILD=1 USE_SDL_TTF=2)
 endif()
 
 file(GLOB MAIN_CXX_C_FILES *.cpp  *.c *.h)
@@ -93,7 +93,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/font common_font)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_font)
 
 #添加3rdparty/HCppBox
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/HCppBox HCppBox)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/HCppBox HCppBox EXCLUDE_FROM_ALL)
 #启用HCppBox、HRC
 hcppbox_enable(${PROJECT_NAME})
 hrc_enable(${PROJECT_NAME})
