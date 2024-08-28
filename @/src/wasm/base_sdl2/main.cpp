@@ -5,6 +5,7 @@
 #include <emscripten/emscripten.h>
 #endif
 #include "SDL.h"
+#include "SDL_ttf.h"
 #include "fsloader.h"
 #include "font.h"
 
@@ -43,6 +44,7 @@ static void DrawRandomRect()
 
 static void quit(int rc)
 {
+    TTF_Quit();
     SDL_Quit();
     exit(rc);
 }
@@ -129,19 +131,52 @@ void loop(void)
         Uint32 tick= SDL_GetTicks();
         if(tick-last_tick > 1000)
         {
-            last_tick=tick;
+            if(last_tick==0)
             {
-                static Uint32 second=0;
-                second++;
-                printf("second reached!second=%d\n",(int)second);
+                last_tick=tick;
+                //第一次进入
+                DrawBackGround();
+                {
+                    TTF_Font *font=TTF_OpenFont((std::string(font_get_root())+"/"+font_get_default_font()).c_str(),32);
+                    if(font!=NULL)
+                    {
+                        const char *text="BaseSDL2启动中！";
+                        SDL_Color font_color= {0xff,0xff,0xff};
+                        SDL_Surface *surface=TTF_RenderUTF8_Blended(font,text,font_color);
+                        if(surface!=NULL)
+                        {
+                            SDL_Texture *texture=SDL_CreateTextureFromSurface(renderer,surface);
+                            if(texture!=NULL)
+                            {
+                                int w=0,h=0;
+                                TTF_SizeUTF8(font,text,&w,&h);
+                                SDL_Rect dest_rect= {0,0,w,h};
+                                SDL_RenderCopy(renderer,texture,NULL,&dest_rect);
+                                SDL_DestroyTexture(texture);
+                            }
+                            SDL_FreeSurface(surface);
+                        }
+                        TTF_CloseFont(font);
+                    }
+                }
+                SDL_RenderPresent(renderer);
             }
-            //开始渲染
-            SDL_RenderClear(renderer);
-            DrawBackGround();
-            //TODO:在此处渲染其他元素
-            DrawRandomRect();
+            else
+            {
+                last_tick=tick;
+                {
+                    static Uint32 second=0;
+                    second++;
+                    printf("second reached!second=%d\n",(int)second);
+                }
+                //开始渲染
+                SDL_RenderClear(renderer);
+                DrawBackGround();
+                //TODO:在此处渲染其他元素
+                DrawRandomRect();
 
-            SDL_RenderPresent(renderer);
+                SDL_RenderPresent(renderer);
+            }
         }
     }
 
@@ -182,6 +217,8 @@ int main(int argc, char *argv[])
         SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't initialize SDL: %s\n", SDL_GetError());
         return 1;
     }
+
+    TTF_Init();
 
     /* Set 800x600 video mode */
     window = SDL_CreateWindow("base_Sdl2",SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,screen_width, screen_height, 0);

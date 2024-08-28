@@ -32,7 +32,8 @@ endif()
 
 if(${WASM_BUILD})
 	set(CMAKE_EXECUTABLE_SUFFIX ".html")
-	add_compile_definitions(WASM_BUILD=1 USE_SDL_TTF=2)
+	add_compile_definitions(WASM_BUILD=1)
+	add_compile_options(-sUSE_SDL_TTF=2)
 endif()
 
 file(GLOB MAIN_CXX_C_FILES *.cpp  *.c *.h)
@@ -41,7 +42,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(${WASM_BUILD})
 	#设定一些选项
-	target_link_libraries(${PROJECT_NAME}  -sWASM_BIGINT=1 )
+	target_link_libraries(${PROJECT_NAME}  -sWASM_BIGINT=1 -sUSE_SDL_TTF=2)
 endif()
 
 include(FindPkgConfig)
