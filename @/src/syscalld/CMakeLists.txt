@@ -43,6 +43,13 @@ target_link_libraries(${PROJECT_NAME} PkgConfig::DBUS)
 find_package(Boost 1.74.0 REQUIRED)
 target_link_libraries(${PROJECT_NAME} Boost::boost)
 
+#添加3rdparty/HCppBox
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/HCppBox HCppBox EXCLUDE_FROM_ALL)
+#启用HCppBox、HRC
+hcppbox_enable(${PROJECT_NAME})
+hrc_enable(${PROJECT_NAME})
+
+
 include(GNUInstallDirs)
 #安装
 INSTALL(TARGETS ${PROJECT_NAME}
