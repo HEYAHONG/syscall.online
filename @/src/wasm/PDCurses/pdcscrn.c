@@ -158,7 +158,7 @@ int PDC_scr_open(void)
         if (ptsz != NULL)
             pdc_font_size = atoi(ptsz);
         if (pdc_font_size <= 0)
-            pdc_font_size = 18;
+            pdc_font_size = 8;
 
         fname = getenv("PDC_FONT");
         pdc_ttffont = TTF_OpenFont(fname ? fname : PDC_FONT_PATH,
@@ -241,7 +241,7 @@ int PDC_scr_open(void)
         max_width = info->current_w;
 
         const char *env = getenv("PDC_LINES");
-        pdc_sheight = (env ? atoi(env) : 25) * pdc_fheight;
+        pdc_sheight = (env ? atoi(env) : 50) * pdc_fheight;
 
         env = getenv("PDC_COLS");
         pdc_swidth = (env ? atoi(env) : 80) * pdc_fwidth;
