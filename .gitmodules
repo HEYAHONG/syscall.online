@@ -1,3 +1,7 @@
 [submodule "@/src/3rdparty/HCppBox"]
 	path = @/src/3rdparty/HCppBox
 	url = ../HCppBox.git
+[submodule "@/src/3rdparty/PDCurses"]
+	path = @/src/3rdparty/PDCurses
+	url = ../../HEYAHONG/PDCurses
+	branch = HYH
