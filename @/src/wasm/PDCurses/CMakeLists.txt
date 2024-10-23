@@ -108,6 +108,8 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/font common_font)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_font)
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
 target_compile_definitions(PDCursesCore PUBLIC PDC_FORCE_UTF8=1 PDC_WIDE=1 PDC_FONT_PATH=\"/font/wqy-zenhei-slim.ttf\")
+else()
+target_compile_definitions(PDCursesCore PUBLIC PDC_FORCE_UTF8=1 PDC_WIDE=1)
 endif()
 
 

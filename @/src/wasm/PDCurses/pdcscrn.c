@@ -17,7 +17,7 @@
 #  endif
 # endif
 TTF_Font *pdc_ttffont = NULL;
-int pdc_font_size = 17;
+int pdc_font_size = -1;
 #endif
 
 SDL_Surface *pdc_screen = NULL, *pdc_font = NULL, *pdc_icon = NULL,
@@ -158,7 +158,7 @@ int PDC_scr_open(void)
         if (ptsz != NULL)
             pdc_font_size = atoi(ptsz);
         if (pdc_font_size <= 0)
-            pdc_font_size = 8;
+            pdc_font_size = 12;
 
         fname = getenv("PDC_FONT");
         pdc_ttffont = TTF_OpenFont(fname ? fname : PDC_FONT_PATH,
@@ -210,7 +210,7 @@ int PDC_scr_open(void)
         SP->orig_attr = FALSE;
 
 #ifdef PDC_WIDE
-    TTF_SizeText(pdc_ttffont, "W", &pdc_fwidth, &pdc_fheight);
+    TTF_SizeText(pdc_ttffont, "中", &pdc_fwidth, &pdc_fheight);
     pdc_fthick = pdc_font_size / 20 + 1;
 #else
     pdc_fheight = pdc_font->h / 8;
@@ -241,7 +241,7 @@ int PDC_scr_open(void)
         max_width = info->current_w;
 
         const char *env = getenv("PDC_LINES");
-        pdc_sheight = (env ? atoi(env) : 50) * pdc_fheight;
+        pdc_sheight = (env ? atoi(env) : 60) * pdc_fheight;
 
         env = getenv("PDC_COLS");
         pdc_swidth = (env ? atoi(env) : 80) * pdc_fwidth;
