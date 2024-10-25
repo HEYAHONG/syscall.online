@@ -13,6 +13,8 @@ syscalld为守护进程，文档路径为<a href="api/syscalld/">syscalld</a>。
 
 # 测试
 
+若有些wasm程序不能正常工作(比如已启用pthread且使用PROXY_TO_PTHREAD编译选项的程序)，尝试通过https方式访问相应地址(可忽略浏览器的警告或者安装[自签证书](https://hyhsystem.cn/))。
+
 ## WASM
 
 wasm路径：<a href="/wasm/">wasm</a>。
