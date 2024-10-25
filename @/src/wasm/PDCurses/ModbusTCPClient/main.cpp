@@ -4,6 +4,11 @@
 #include <curses.h>
 #include "HCPPBox.h"
 #include "hbox.h"
+#include <thread>
+#include <chrono>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif // __EMSCRIPTEN__
 static void banner();
 static void execute_line(char *line);
 static WINDOW *win=NULL;
@@ -12,14 +17,60 @@ static int win_putchar(char ch)
     putchar(ch);
     if(win!=NULL&& ch != '\r')
     {
-        char str[2]={ch,0};
+        char str[2]= {ch,0};
         waddstr(win,str);
         wrefresh(win);
     }
     return ch;
 }
 static bool IoIsConnected();
-int main()
+static char buff[4096]= {0};
+static size_t buff_index=0;
+static int last_x=0;
+static int last_y=0;
+static void main_loop()
+{
+    {
+        last_x=getcurx(win);
+        last_y=getcury(win);
+        chtype  c=wgetch(win);
+        if(c=='\b')
+        {
+            if(buff_index>0)
+            {
+                buff_index--;
+                wdelch(win);
+            }
+            else
+            {
+                wmove(win,last_y,last_x);
+                wrefresh(win);
+            }
+            return;
+        }
+        if(((c & 0xFF)>=0x20) && ((c & 0xFF)<0x80))
+        {
+            if(buff_index<(sizeof(buff)-1))
+            {
+                buff[buff_index++]=(c&0xff);
+            }
+        }
+        if(c==KEY_ENTER || c == '\n' || (buff_index==((sizeof(buff)-1))))
+        {
+            buff[buff_index]='\0';
+            if(strcmp(buff,"exit")==0)
+            {
+                hprintf("exist is not support!\r\n");
+            }
+            execute_line(buff);
+            waddstr(win,IoIsConnected()?"modbus>":"modbus(not connected)>");
+            buff[0]='\0';
+            buff_index=0;
+        }
+        wrefresh(win);
+    }
+}
+int pthread_main()
 {
 #ifdef XCURSES
     Xinitscr(argc, argv);
@@ -67,40 +118,27 @@ int main()
         }
 
     }
-    char buff[4096]={0};
-    size_t buff_index=0;
+
     waddstr(win,IoIsConnected()?"modbus>":"modbus(not connected)>");
+    {
+        while(true)
+        {
+            main_loop();
+        }
+    }
+}
+
+int main()
+{
+    std::thread main_thread(pthread_main);
+    main_thread.detach();
+#ifndef __EMSCRIPTEN__
     while(true)
     {
-        chtype  c=wgetch(win);
-        if(((c & 0xFF)>=0x20) && ((c & 0xFF)<0x80))
-        {
-            if(buff_index<(sizeof(buff)-1))
-            {
-                buff[buff_index++]=(c&0xff);
-            }
-            else
-            {
-                buff[sizeof(buff)-1]='\0';
-                execute_line(buff);
-                waddstr(win,IoIsConnected()?"modbus>":"modbus(not connected)>");
-                buff[0]='\0';
-                buff_index=0;
-            }
-        }
-        if(c==KEY_ENTER || c == '\n')
-        {
-            buff[buff_index]='\0';
-            execute_line(buff);
-            waddstr(win,IoIsConnected()?"modbus>":"modbus(not connected)>");
-            buff[0]='\0';
-            buff_index=0;
-        }
-        wrefresh(win);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-
+#endif // __EMSCRIPTEN__
     return 0;
-
 }
 
 #define main submain
