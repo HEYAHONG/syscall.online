@@ -12,6 +12,21 @@
 static void banner();
 static void execute_line(char *line);
 static WINDOW *win=NULL;
+static class memory_clean
+{
+public:
+    memory_clean()
+    {
+
+    }
+    ~memory_clean()
+    {
+        if(win!=NULL)
+        {
+            delwin(win);
+        }
+    }
+} g_memory_clean;
 static int win_putchar(char ch)
 {
     putchar(ch);
