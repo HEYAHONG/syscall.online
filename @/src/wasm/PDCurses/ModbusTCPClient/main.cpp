@@ -25,6 +25,7 @@ public:
         {
             delwin(win);
         }
+        endwin();
     }
 } g_memory_clean;
 static int win_putchar(char ch)
