@@ -126,6 +126,7 @@ set(DEMOS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/PDCurses/demos/)
 add_executable(firework ${DEMOS_DIR}/firework.c )
 target_link_libraries(firework ${PROJECT_NAME})
 if(${WASM_BUILD})
+    target_link_libraries(firework  -sASYNCIFY  )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/firework.html ${CMAKE_BINARY_DIR}/firework.data  ${CMAKE_BINARY_DIR}/firework.js ${CMAKE_BINARY_DIR}/firework.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
     )
@@ -136,7 +137,7 @@ endif()
 add_executable(ozdemo  ${DEMOS_DIR}/ozdemo.c )
 target_link_libraries(ozdemo ${PROJECT_NAME})
 if(${WASM_BUILD})
-	target_link_libraries(ozdemo  -sASYNCIFY  )
+    target_link_libraries(ozdemo  -sASYNCIFY  )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/ozdemo.html  ${CMAKE_BINARY_DIR}/ozdemo.data ${CMAKE_BINARY_DIR}/ozdemo.js ${CMAKE_BINARY_DIR}/ozdemo.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
     )
@@ -145,7 +146,7 @@ endif()
 add_executable(ptest  ${DEMOS_DIR}/ptest.c )
 target_link_libraries(ptest ${PROJECT_NAME})
 if(${WASM_BUILD})
-	target_link_libraries(ptest  -sASYNCIFY  )
+    target_link_libraries(ptest  -sASYNCIFY  )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/ptest.html ${CMAKE_BINARY_DIR}/ptest.data  ${CMAKE_BINARY_DIR}/ptest.js ${CMAKE_BINARY_DIR}/ptest.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
     )
@@ -154,7 +155,7 @@ endif()
 add_executable(rain  ${DEMOS_DIR}/rain.c )
 target_link_libraries(rain ${PROJECT_NAME})
 if(${WASM_BUILD})
-	target_link_libraries(rain  -sASYNCIFY  )
+    target_link_libraries(rain  -sASYNCIFY  )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/rain.html ${CMAKE_BINARY_DIR}/rain.data  ${CMAKE_BINARY_DIR}/rain.js ${CMAKE_BINARY_DIR}/rain.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
     )
@@ -163,7 +164,7 @@ endif()
 add_executable(testcurs  ${DEMOS_DIR}/testcurs.c )
 target_link_libraries(testcurs ${PROJECT_NAME})
 if(${WASM_BUILD})
-	target_link_libraries(testcurs  -sASYNCIFY  )
+    target_link_libraries(testcurs  -sASYNCIFY  )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/testcurs.html ${CMAKE_BINARY_DIR}/testcurs.data  ${CMAKE_BINARY_DIR}/testcurs.js ${CMAKE_BINARY_DIR}/testcurs.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
     )
@@ -172,7 +173,7 @@ endif()
 add_executable(tuidemo  ${DEMOS_DIR}/tuidemo.c  ${DEMOS_DIR}/tui.c )
 target_link_libraries(tuidemo ${PROJECT_NAME})
 if(${WASM_BUILD})
-	target_link_libraries(tuidemo  -sASYNCIFY  )
+    target_link_libraries(tuidemo  -sASYNCIFY  )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/tuidemo.html  ${CMAKE_BINARY_DIR}/tuidemo.data  ${CMAKE_BINARY_DIR}/tuidemo.js ${CMAKE_BINARY_DIR}/tuidemo.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
     )
@@ -181,7 +182,7 @@ endif()
 add_executable(worm  ${DEMOS_DIR}/worm.c )
 target_link_libraries(worm ${PROJECT_NAME})
 if(${WASM_BUILD})
-	target_link_libraries(worm  -sASYNCIFY  )
+    target_link_libraries(worm  -sASYNCIFY  )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/worm.html  ${CMAKE_BINARY_DIR}/worm.data  ${CMAKE_BINARY_DIR}/worm.js ${CMAKE_BINARY_DIR}/worm.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
     )
@@ -190,7 +191,7 @@ endif()
 add_executable(xmas  ${DEMOS_DIR}/xmas.c )
 target_link_libraries(xmas ${PROJECT_NAME})
 if(${WASM_BUILD})
-	target_link_libraries(xmas  -sASYNCIFY  )
+    target_link_libraries(xmas  -sASYNCIFY  )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/xmas.html ${CMAKE_BINARY_DIR}/xmas.data  ${CMAKE_BINARY_DIR}/xmas.js ${CMAKE_BINARY_DIR}/xmas.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/
     )
@@ -200,7 +201,7 @@ endif()
 add_executable(ModbusTCPClient  ${CMAKE_CURRENT_SOURCE_DIR}/ModbusTCPClient/main.cpp  ${CMAKE_CURRENT_SOURCE_DIR}/ModbusTCPClient/ModbusSocketIo.h)
 target_link_libraries(ModbusTCPClient ${PROJECT_NAME})
 if(${WASM_BUILD})
-	target_link_libraries(ModbusTCPClient -lwebsocket.js -sPROXY_POSIX_SOCKETS -pthread -sPROXY_TO_PTHREAD )
+    target_link_libraries(ModbusTCPClient -lwebsocket.js -sWEBSOCKET_URL=\"ws://localhost:58080\" -sPROXY_POSIX_SOCKETS -pthread -sPROXY_TO_PTHREAD )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/ModbusTCPClient.html ${CMAKE_BINARY_DIR}/ModbusTCPClient.data  ${CMAKE_BINARY_DIR}/ModbusTCPClient.js ${CMAKE_BINARY_DIR}/ModbusTCPClient.worker.js
  ${CMAKE_BINARY_DIR}/ModbusTCPClient.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/ModbusTCPClient/
