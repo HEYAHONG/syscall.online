@@ -71,7 +71,7 @@ public:
             return false;
         }
         bool ret=false;
-        socket_fd=socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+        socket_fd=socket(AF_INET,SOCK_STREAM,0);
         if(socket_fd!=INVALID_SOCKET)
         {
             HCPPSocketAddressIPV4 addr= {0};
@@ -96,10 +96,11 @@ public:
                     freeaddrinfo(ai_result);
                 }
             }
+
             if(ret)
             {
                 //连接
-                if(0!=connect(socket_fd,(HCPPSocketAddress *)&addr,sizeof(addr)))
+                if(0>connect(socket_fd,(HCPPSocketAddress *)&addr,sizeof(addr)))
                 {
                     ret=false;
                 }
@@ -110,7 +111,7 @@ public:
                         struct timeval  tv;
                         tv.tv_sec = 0;
                         tv.tv_usec = 500*1000;
-                        ret=(0==setsockopt(socket_fd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv)));
+                        setsockopt(socket_fd, SOL_SOCKET, SO_RCVTIMEO, (const char *)&tv, sizeof(tv));
                     }
                 }
             }

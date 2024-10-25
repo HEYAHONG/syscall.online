@@ -201,7 +201,8 @@ endif()
 add_executable(ModbusTCPClient  ${CMAKE_CURRENT_SOURCE_DIR}/ModbusTCPClient/main.cpp  ${CMAKE_CURRENT_SOURCE_DIR}/ModbusTCPClient/ModbusSocketIo.h)
 target_link_libraries(ModbusTCPClient ${PROJECT_NAME})
 if(${WASM_BUILD})
-    target_link_libraries(ModbusTCPClient -lwebsocket.js -sWEBSOCKET_URL=\"ws://localhost:58080\" -sPROXY_POSIX_SOCKETS -pthread -sPROXY_TO_PTHREAD )
+    target_compile_definitions(ModbusTCPClient PUBLIC SOCKK=58080 )
+    target_link_libraries(ModbusTCPClient -lwebsocket -sPROXY_POSIX_SOCKETS=1 -pthread -sPROXY_TO_PTHREAD=1 )
     INSTALL(FILES ${CMAKE_BINARY_DIR}/ModbusTCPClient.html ${CMAKE_BINARY_DIR}/ModbusTCPClient.data  ${CMAKE_BINARY_DIR}/ModbusTCPClient.js ${CMAKE_BINARY_DIR}/ModbusTCPClient.worker.js
  ${CMAKE_BINARY_DIR}/ModbusTCPClient.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/ModbusTCPClient/

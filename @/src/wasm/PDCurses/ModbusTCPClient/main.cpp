@@ -8,6 +8,9 @@
 #include <chrono>
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+#include <emscripten/websocket.h>
+#include <emscripten/threading.h>
+#include <emscripten/posix_socket.h>
 #endif // __EMSCRIPTEN__
 static void banner();
 static void execute_line(char *line);
@@ -86,6 +89,26 @@ static void main_loop()
         wrefresh(win);
     }
 }
+static void socket_init()
+{
+#ifdef __EMSCRIPTEN__
+    static EMSCRIPTEN_WEBSOCKET_T bridgeSocket = 0;
+    bridgeSocket = emscripten_init_websocket_to_posix_socket_bridge("ws://localhost:58080");
+    // Synchronously wait until connection has been established.
+    uint16_t readyState = 0;
+    do
+    {
+        emscripten_websocket_get_ready_state(bridgeSocket, &readyState);
+        emscripten_thread_sleep(1000);
+        printf("wait for socket ready!\r\n");
+    }
+    while (readyState == 0);
+#else
+    HCPPSocketInit();
+#endif // __EMSCRIPTEN__
+
+}
+
 int pthread_main()
 {
 #ifdef XCURSES
@@ -122,7 +145,7 @@ int pthread_main()
     scrollok(win,true);
     {
         //初始化套接字
-        HCPPSocketInit();
+        socket_init();
 
         hprintf_set_callback([](char c)
         {
@@ -144,6 +167,8 @@ int pthread_main()
     }
 }
 
+
+
 int main()
 {
     std::thread main_thread(pthread_main);
@@ -156,6 +181,8 @@ int main()
 #endif // __EMSCRIPTEN__
     return 0;
 }
+
+#include "ModbusSocketIo.h"
 
 #define main submain
 #define readline subreadline
