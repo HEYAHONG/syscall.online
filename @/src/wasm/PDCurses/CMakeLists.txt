@@ -190,4 +190,12 @@ if(${WASM_BUILD})
 endif()
 
 
+add_executable(ModbusTCPClient  ${CMAKE_CURRENT_SOURCE_DIR}/ModbusTCPClient/main.cpp )
+target_link_libraries(ModbusTCPClient ${PROJECT_NAME})
+target_link_libraries(ModbusTCPClient -lwebsocket.js -sPROXY_POSIX_SOCKETS -pthread -sPROXY_TO_PTHREAD )
+if(${WASM_BUILD})
+    INSTALL(FILES ${CMAKE_BINARY_DIR}/ModbusTCPClient.html ${CMAKE_BINARY_DIR}/ModbusTCPClient.data  ${CMAKE_BINARY_DIR}/ModbusTCPClient.js ${CMAKE_BINARY_DIR}/ModbusTCPClient.wasm
+    DESTINATION /var/www/html/wasm/${PROJECT_NAME}/ModbusTCPClient/
+    )
+endif()
 
