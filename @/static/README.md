@@ -30,7 +30,7 @@ wasm路径：<a href="/wasm/">wasm</a>。
 
 由于浏览器不能直接操作套接字，需要运行一个websocket服务器进行代理socket操作。
 
-若为特殊说明，本战默认的代理为ws://localhost:58080（即在本地运行服务器且端口号使用58080）,代理服务器的源代码可见[emscripten](https://github.com/emscripten-core/emscripten)源代码的[tools/websocket_to_posix_proxy](https://github.com/emscripten-core/emscripten/tree/main/tools/websocket_to_posix_proxy)。
+若未特殊说明，本站默认的代理为ws://localhost:58080（即在本地运行服务器且端口号使用58080）,代理服务器的源代码可见[emscripten](https://github.com/emscripten-core/emscripten)源代码的[tools/websocket_to_posix_proxy](https://github.com/emscripten-core/emscripten/tree/main/tools/websocket_to_posix_proxy)。
 
 此处提供已编译好的二进制文件：<a href="assets/websocket_to_posix_proxy.zip">websocket_to_posix_proxy.zip</a>
 
