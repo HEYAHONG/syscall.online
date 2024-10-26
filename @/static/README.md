@@ -32,6 +32,8 @@ wasm路径：<a href="/wasm/">wasm</a>。
 
 若为特殊说明，本战默认的代理为ws://localhost:58080（即在本地运行服务器且端口号使用58080）,代理服务器的源代码可见[emscripten](https://github.com/emscripten-core/emscripten)源代码的[tools/websocket_to_posix_proxy](https://github.com/emscripten-core/emscripten/tree/main/tools/websocket_to_posix_proxy)。
 
+此处提供已编译好的二进制文件：[websocket_to_posix_proxy.zip](assets/websocket_to_posix_proxy.zip)
+
 若为运行代理直接运行需要socket的程序，可能导致以下异常：
 
 - 若启用了socket代理（PROXY_POSIX_SOCKET）时，使用socket进行网络操作时阻塞。表现为程序卡死。
