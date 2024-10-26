@@ -44,47 +44,19 @@ static int win_putchar(char ch)
 }
 static bool IoIsConnected();
 static char buff[4096]= {0};
-static size_t buff_index=0;
-static int last_x=0;
-static int last_y=0;
 static void main_loop()
 {
     {
-        last_x=getcurx(win);
-        last_y=getcury(win);
-        chtype  c=wgetch(win);
-        if(c=='\b')
+        int ret=wgetnstr(win,buff,sizeof(buff)-1);
+        if(ret!=ERR && ret >= 0)
         {
-            if(buff_index>0)
-            {
-                buff_index--;
-                wdelch(win);
-            }
-            else
-            {
-                wmove(win,last_y,last_x);
-                wrefresh(win);
-            }
-            return;
-        }
-        if(((c & 0xFF)>=0x20) && ((c & 0xFF)<0x80))
-        {
-            if(buff_index<(sizeof(buff)-1))
-            {
-                buff[buff_index++]=(c&0xff);
-            }
-        }
-        if(c==KEY_ENTER || c == '\n' || (buff_index==((sizeof(buff)-1))))
-        {
-            buff[buff_index]='\0';
+            buff[ret]='\0';
             if(strcmp(buff,"exit")==0)
             {
                 hprintf("exist is not support!\r\n");
             }
             execute_line(buff);
             waddstr(win,IoIsConnected()?"modbus>":"modbus(not connected)>");
-            buff[0]='\0';
-            buff_index=0;
         }
         wrefresh(win);
     }
