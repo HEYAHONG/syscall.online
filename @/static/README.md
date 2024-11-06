@@ -45,3 +45,4 @@ wasm路径：<a href="/wasm/">wasm</a>。
 
 采用nginx转发。接口路径为/ws,即连接地址为为ws://syscall.online/ws。
 
+注意：由于采用了nginx代理，设定了300s超时，即若300s内无任何通信将断开连接。
