@@ -6,6 +6,8 @@
 
 # nginx反向代理服务器设置
 
+## CGI设置
+
 为使cgi程序能够获取正确的IP地址，需要在占用80端口的nginx的location配置中添加下列代码：
 
 ```nginx
@@ -13,5 +15,34 @@ proxy_set_header   Host             $host;
 proxy_set_header   X-Real-IP        $remote_addr;
 proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
 proxy_set_header   X-Forwarded-Proto $scheme;
+```
+
+## WebSocket设置
+
+server块前的配置：
+
+```nginx
+map $http_upgrade $connection_upgrade {
+        default          keep-alive;
+        'websocket'      upgrade;
+}
+
+```
+
+server块内的设置(匹配转发路径)：
+
+```nginx
+location /ws {
+            proxy_pass http://[::1]:65080;#设定为实际服务器地址
+            proxy_http_version 1.1;
+            proxy_read_timeout 300s;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header   Host             $host;
+            proxy_set_header   X-Real-IP        $remote_addr;
+            proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Proto $scheme;
+        }
+
 ```
 
