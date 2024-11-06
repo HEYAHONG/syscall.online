@@ -30,6 +30,10 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}  ${CMAKE_THREAD_LIBS_INIT})
 
 include(FindPkgConfig)
 
+#libwebsockets
+pkg_check_modules(LIBWEBSOCKETS REQUIRED IMPORTED_TARGET libwebsockets)
+target_link_libraries(${PROJECT_NAME} PkgConfig::LIBWEBSOCKETS)
+
 
 #jsoncpp
 pkg_check_modules(JSONCPP REQUIRED IMPORTED_TARGET jsoncpp)

@@ -39,3 +39,9 @@ wasm路径：<a href="/wasm/">wasm</a>。
 - 若启用了socket代理（PROXY_POSIX_SOCKET）时，使用socket进行网络操作时阻塞。表现为程序卡死。
 - 控制台中报***无法连接ws://localhost:58080***错误。
 
+# WebSocket接口
+
+
+
+采用nginx转发。接口路径为/ws,即连接地址为为ws://syscall.online/ws。
+

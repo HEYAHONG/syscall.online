@@ -11,6 +11,7 @@
 - 采用docker技术使代码更有容易部署
 - 采用make作为主要构建工具
 - 支持WebAssembly(采用[emscripten](https://emscripten.org/))
+- 支持WebSocket(采用[libwebsockets](https://libwebsockets.org/)库)
 
 # 网站
 

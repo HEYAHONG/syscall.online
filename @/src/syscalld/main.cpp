@@ -6,6 +6,7 @@
 #include "dbus_interface.h"
 #include "sysloginfo.h"
 #include "globalvariable.h"
+#include "websockets.h"
 
 static void signalHandler(int signum)
 {
@@ -34,12 +35,16 @@ int main()
 
     dbus_interface_init();
 
+    websockets_init();
+
     while(gv_is_running())
     {
         //默认systemd作为init系统，因此不采用传统守护进程的启动方式(fork()->setsid()->fork()),直接不退出程序
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
         dbus_interface_process();
     }
+
+    websockets_deinit();
 
     dbus_interface_deinit();
 
