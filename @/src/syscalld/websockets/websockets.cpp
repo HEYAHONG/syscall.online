@@ -80,6 +80,7 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
         ctx->ctor=NULL;
         ctx->dtor=NULL;
         ctx->process=NULL;
+        ctx->wsi=wsi;
         lws_hdr_copy(wsi,ctx->uri,sizeof(ctx->uri)-1,WSI_TOKEN_GET_URI);
         LOGI("WebSocket URI %s",ctx->uri);
         websocket_interface_detect(*ctx);

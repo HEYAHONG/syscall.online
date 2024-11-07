@@ -16,6 +16,7 @@ struct websockets_connection_context
 {
     uint8_t txringbuffer[4096];//发送环形缓冲区，使用hringbuf_*相关函数访问
     char    uri[4096];//uri存储,'\0'字符之后的空间可用于其它用途,如存储用户参数，对于一个确定的接口uri是固定的，故而剩余空间也是确定的。
+    struct lws *wsi;
     void (*ctor)(websockets_connection_context_t *ctx);
     void (*dtor)(websockets_connection_context_t *ctx);
     void (*process)(struct lws *wsi,struct websockets_connection_context *ctx,void *data,size_t len);
