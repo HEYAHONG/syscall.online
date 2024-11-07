@@ -6,11 +6,57 @@
 #include <mutex>
 #include <hbox.h>
 #include <string>
-typedef struct
+#include <map>
+static std::recursive_mutex lock;
+static std::map<std::string,websocket_interface_t> interfaces;
+void websocket_register_interface(const char *uri,websocket_interface_t interface)
 {
-    uint8_t txringbuffer[4096];
-    char    uri[4096];
-} websockets_connection_context_t;
+    if(uri!=NULL && uri[0]!='\0')
+    {
+        std::lock_guard<std::recursive_mutex> lc(lock);
+        interfaces[uri]=interface;
+    }
+}
+
+void websocket_unregister_interface(const char *uri)
+{
+    if(uri!=NULL && uri[0]!='\0')
+    {
+        std::lock_guard<std::recursive_mutex> lc(lock);
+        auto it=interfaces.find(uri);
+        if(it!=interfaces.end())
+        {
+            interfaces.erase(it);
+        }
+    }
+}
+
+static void websocket_echo(struct lws *wsi,websockets_connection_context *ctx,void *data,size_t len)
+{
+    hringbuf_input(hringbuf_get(ctx->txringbuffer,sizeof(ctx->txringbuffer)),(uint8_t *)data,len);
+    lws_callback_on_writable(wsi);
+    lws_rx_flow_control(wsi,0);
+}
+
+static void websocket_interface_detect(websockets_connection_context_t &ctx)
+{
+    std::lock_guard<std::recursive_mutex> lc(lock);
+    //TODO此处设置不同的ctor(构造)、dtor(析构)、process(处理)函数以处理不同接口
+    if(interfaces.find(ctx.uri)!=interfaces.end())
+    {
+        auto it=interfaces.find(ctx.uri);
+        ctx.ctor=it->second.ctor;
+        ctx.dtor=it->second.dtor;
+        ctx.process=it->second.process;
+    }
+
+    //默认ECHO
+    if(ctx.process==NULL)
+    {
+        ctx.process=websocket_echo;
+    }
+}
+
 static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
     websockets_connection_context_t *ctx=(websockets_connection_context_t*)user;
@@ -31,16 +77,25 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
     {
         LOGI("WebSocket connection established\n");
         memset(ctx->uri,0,sizeof(ctx->uri));
+        ctx->ctor=NULL;
+        ctx->dtor=NULL;
+        ctx->process=NULL;
         lws_hdr_copy(wsi,ctx->uri,sizeof(ctx->uri)-1,WSI_TOKEN_GET_URI);
         LOGI("WebSocket URI %s",ctx->uri);
+        websocket_interface_detect(*ctx);
+        if(ctx->ctor!=NULL)
+        {
+            ctx->ctor(ctx);
+        }
     }
     break;
     case LWS_CALLBACK_RECEIVE:
     {
         LOGI("WebSocket Received data length=%d",(int)len);
-        hringbuf_input(txbuf,(uint8_t *)in,len);
-        lws_callback_on_writable(wsi);
-        lws_rx_flow_control(wsi,0);
+        if(ctx->process!=NULL)
+        {
+            ctx->process(wsi,ctx,in,len);
+        }
     }
     break;
     case LWS_CALLBACK_SERVER_WRITEABLE:
@@ -59,8 +114,14 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
     }
     break;
     case LWS_CALLBACK_CLOSED:
+    {
+        if(ctx->dtor!=NULL)
+        {
+            ctx->dtor(ctx);
+        }
         LOGI("WebSocket connection closed\n");
-        break;
+    }
+    break;
     default:
         break;
     }
@@ -73,7 +134,6 @@ static struct lws_protocols protocols[] =
     {NULL,NULL,0} /* end of list */
 };
 static struct lws_context * context=NULL;
-static std::recursive_mutex lock;
 static void websockets_run()
 {
     LOGI("WebSocket Run!");
