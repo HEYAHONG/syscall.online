@@ -5,9 +5,11 @@
 #include <chrono>
 #include <mutex>
 #include <hbox.h>
+#include <string>
 typedef struct
 {
     uint8_t txringbuffer[4096];
+    char    uri[4096];
 } websockets_connection_context_t;
 static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason, void *user, void *in, size_t len)
 {
@@ -26,14 +28,21 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
     switch (reason)
     {
     case LWS_CALLBACK_ESTABLISHED:
+    {
         LOGI("WebSocket connection established\n");
-        break;
+        memset(ctx->uri,0,sizeof(ctx->uri));
+        lws_hdr_copy(wsi,ctx->uri,sizeof(ctx->uri)-1,WSI_TOKEN_GET_URI);
+        LOGI("WebSocket URI %s",ctx->uri);
+    }
+    break;
     case LWS_CALLBACK_RECEIVE:
+    {
         LOGI("WebSocket Received data length=%d",(int)len);
         hringbuf_input(txbuf,(uint8_t *)in,len);
         lws_callback_on_writable(wsi);
         lws_rx_flow_control(wsi,0);
-        break;
+    }
+    break;
     case LWS_CALLBACK_SERVER_WRITEABLE:
     {
         LOGI("WebSocket server writeable!\n");
