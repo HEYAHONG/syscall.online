@@ -55,6 +55,8 @@ bool websocket_interface_send_text(websockets_connection_context_t *ctx,void *da
  * \param ctx websockets_connection_context_t* 上下文
  * \param data void* 数据
  * \param datalen size_t 数据长度
+ * \param is_start int 是否为分片第一片
+ * \param is_final int 是否为分片最后一片
  * \return bool 是否加入发送队列
  *
  */
