@@ -1,3 +1,4 @@
+#include <string>
 #include "websockets.h"
 #include "sysloginfo.h"
 #include "libwebsockets.h"
@@ -5,8 +6,8 @@
 #include <chrono>
 #include <mutex>
 #include <hbox.h>
-#include <string>
 #include <map>
+#include <memory>
 static std::recursive_mutex lock;
 static std::map<std::string,websocket_interface_t> interfaces;
 void websocket_register_interface(const char *uri,websocket_interface_t interface)
@@ -33,9 +34,64 @@ void websocket_unregister_interface(const char *uri)
 
 static void websocket_echo(struct lws *wsi,websockets_connection_context *ctx,void *data,size_t len)
 {
-    hringbuf_input(hringbuf_get(ctx->txringbuffer,sizeof(ctx->txringbuffer)),(uint8_t *)data,len);
-    lws_callback_on_writable(wsi);
-    lws_rx_flow_control(wsi,0);
+    if(!lws_frame_is_binary(wsi))
+    {
+        LOGI("WebSocket Text Echo:len=%d",(int)len);
+        websocket_interface_send_text(ctx,data,len);
+    }
+    else
+    {
+        LOGI("WebSocket Binary Echo:len=%d,is_first=%d,is_final=%d",(int)len,(int)lws_is_first_fragment(wsi),(int)lws_is_final_fragment(wsi));
+        websocket_interface_send_binary(ctx,data,len,lws_is_first_fragment(wsi),lws_is_final_fragment(wsi));
+    }
+}
+
+bool websocket_interface_send_text(websockets_connection_context_t *ctx,void *data,size_t datalen)
+{
+    if(ctx!=NULL && ctx->wsi!=NULL && ctx->on_writeable !=NULL && data!=NULL && datalen !=0)
+    {
+        try
+        {
+            std::shared_ptr<uint8_t> buffer(new uint8_t[LWS_PRE+datalen]);
+            memset(buffer.get(),0,LWS_PRE);
+            memcpy(&buffer.get()[LWS_PRE],data,datalen);
+            ctx->on_writeable->push([=]()
+            {
+                lws_write(ctx->wsi,&buffer.get()[LWS_PRE],datalen,LWS_WRITE_TEXT);
+            });
+            lws_callback_on_writable(ctx->wsi);
+            return true;
+        }
+        catch(...)
+        {
+
+        }
+    }
+    return false;
+}
+
+bool websocket_interface_send_binary(websockets_connection_context_t *ctx,void *data,size_t datalen,int is_start,int is_final)
+{
+    if(ctx!=NULL && ctx->wsi!=NULL && ctx->on_writeable !=NULL && data!=NULL && datalen !=0)
+    {
+        try
+        {
+            std::shared_ptr<uint8_t> buffer(new uint8_t[LWS_PRE+datalen]);
+            memset(buffer.get(),0,LWS_PRE);
+            memcpy(&buffer.get()[LWS_PRE],data,datalen);
+            ctx->on_writeable->push([=]()
+            {
+                lws_write(ctx->wsi,&buffer.get()[LWS_PRE],datalen,(enum lws_write_protocol)lws_write_ws_flags(LWS_WRITE_BINARY,is_start,is_final));
+            });
+            lws_callback_on_writable(ctx->wsi);
+            return true;
+        }
+        catch(...)
+        {
+
+        }
+    }
+    return false;
 }
 
 static void websocket_interface_detect(websockets_connection_context_t &ctx)
@@ -65,12 +121,6 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
         //不是websocket的连接回调
         return 0;
     }
-    hringbuf *txbuf=hringbuf_get(ctx->txringbuffer,sizeof(ctx->txringbuffer));
-    if(txbuf==NULL)
-    {
-        LOGI("WebSocket TxBuf Error");
-        return 0;
-    }
     switch (reason)
     {
     case LWS_CALLBACK_ESTABLISHED:
@@ -81,6 +131,7 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
         ctx->dtor=NULL;
         ctx->process=NULL;
         ctx->wsi=wsi;
+        ctx->on_writeable=new std::queue<std::function<void ()>>();
         lws_hdr_copy(wsi,ctx->uri,sizeof(ctx->uri)-1,WSI_TOKEN_GET_URI);
         LOGI("WebSocket URI %s",ctx->uri);
         websocket_interface_detect(*ctx);
@@ -93,6 +144,10 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
     case LWS_CALLBACK_RECEIVE:
     {
         LOGI("WebSocket Received data length=%d",(int)len);
+        if(ctx->on_writeable==NULL)
+        {
+            break;
+        }
         if(ctx->process!=NULL)
         {
             ctx->process(wsi,ctx,in,len);
@@ -102,16 +157,40 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
     case LWS_CALLBACK_SERVER_WRITEABLE:
     {
         LOGI("WebSocket server writeable!\n");
-        uint8_t buffer[LWS_PRE+1024]= {0};
-        size_t buffer_len=hringbuf_output(txbuf,&buffer[LWS_PRE],sizeof(buffer)-LWS_PRE);
-        if(buffer_len==0)
+        if(ctx->on_writeable==NULL)
         {
-            //结束写入
-            lws_rx_flow_control(wsi,1);
             break;
         }
-        lws_write(wsi,&buffer[LWS_PRE],buffer_len,LWS_WRITE_TEXT);
-        lws_callback_on_writable(wsi);
+        if(ctx->on_writeable->empty())
+        {
+            break;
+        }
+        auto cb=ctx->on_writeable->front();
+        ctx->on_writeable->pop();
+        if(cb!=NULL)
+        {
+            try
+            {
+                cb();
+            }
+            catch(...)
+            {
+
+            }
+
+        }
+        if(!ctx->on_writeable->empty())
+        {
+            if(ctx->on_writeable->size()>5)
+            {
+                lws_rx_flow_control(wsi,0);
+            }
+            lws_callback_on_writable(wsi);
+        }
+        else
+        {
+            lws_rx_flow_control(wsi,1);
+        }
     }
     break;
     case LWS_CALLBACK_CLOSED:
@@ -119,6 +198,11 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
         if(ctx->dtor!=NULL)
         {
             ctx->dtor(ctx);
+        }
+        if(ctx->on_writeable!=NULL)
+        {
+            delete ctx->on_writeable;
+            ctx->on_writeable=NULL;
         }
         LOGI("WebSocket connection closed\n");
     }
@@ -131,7 +215,7 @@ static int callback_websocket(struct lws *wsi, enum lws_callback_reasons reason,
 
 static struct lws_protocols protocols[] =
 {
-    {"websocket",callback_websocket,sizeof(websockets_connection_context_t),1024,0,NULL,1024},
+    {"websocket",callback_websocket,sizeof(websockets_connection_context_t),4096,0,NULL,4096},
     {NULL,NULL,0} /* end of list */
 };
 static struct lws_context * context=NULL;
@@ -146,7 +230,15 @@ static void websockets_run()
             {
                 break;
             }
-            lws_service(context,100);
+            try
+            {
+                lws_service(context,100);
+
+            }
+            catch(...)
+            {
+
+            }
         }
         std::this_thread::sleep_for(std::chrono::milliseconds(20));
     }

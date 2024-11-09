@@ -18,7 +18,7 @@ set(PROJECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 Project(${PROJECT_NAME}	VERSION "${PROJECT_VERSION_STR}")
 Project(${PROJECT_NAME} C CXX ASM)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 file(GLOB MAIN_CXX_C_FILES *.cpp  *.c *.h)
 add_executable(${PROJECT_NAME}  ${MAIN_CXX_C_FILES})
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
@@ -48,11 +48,11 @@ find_package(Boost 1.74.0 REQUIRED)
 target_link_libraries(${PROJECT_NAME} Boost::boost)
 
 #添加3rdparty/HCppBox
+add_compile_options( -DHCPPRT_NO_NEW_AND_DELETE_OVERRIDE=1 )
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../3rdparty/HCppBox HCppBox EXCLUDE_FROM_ALL)
 #启用HCppBox、HRC
 hcppbox_enable(${PROJECT_NAME})
 hrc_enable(${PROJECT_NAME})
-
 
 include(GNUInstallDirs)
 #安装
