@@ -104,10 +104,11 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/fsloader common_fsloader 
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_fsloader)
 
 #添加common_font库文件
+set(FONT_ROOT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fonts")
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/font common_font)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_font)
 if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
-target_compile_definitions(PDCursesCore PUBLIC PDC_FORCE_UTF8=1 PDC_WIDE=1 PDC_FONT_PATH=\"/font/wqy-zenhei-slim.ttf\")
+target_compile_definitions(PDCursesCore PUBLIC PDC_FORCE_UTF8=1 PDC_WIDE=1 PDC_FONT_PATH=\"/font/DejaVuSansMono.ttf\")
 else()
 target_compile_definitions(PDCursesCore PUBLIC PDC_FORCE_UTF8=1 PDC_WIDE=1)
 endif()

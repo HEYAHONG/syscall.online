@@ -210,7 +210,7 @@ int PDC_scr_open(void)
         SP->orig_attr = FALSE;
 
 #ifdef PDC_WIDE
-    TTF_SizeText(pdc_ttffont, "中", &pdc_fwidth, &pdc_fheight);
+    TTF_SizeText(pdc_ttffont, "W", &pdc_fwidth, &pdc_fheight);
     pdc_fthick = pdc_font_size / 20 + 1;
 #else
     pdc_fheight = pdc_font->h / 8;
