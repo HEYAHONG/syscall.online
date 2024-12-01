@@ -130,7 +130,17 @@ int main()
             ret.mode=HGUI_PIXEL_MODE_32_BITS;
             if(x<w && y <h)
             {
-                ret.pixel_32_bits=VRAM[x][y];
+                //修复颜色显示，使其与桌面端表现一致
+                uint32_t pixel_bits=VRAM[x][y];
+                uint32_t new_pixel_bits=(pixel_bits&0xFF000000);
+#if WASM_BUILD
+                new_pixel_bits|=((pixel_bits>>16)&0xFF);
+                new_pixel_bits|=(pixel_bits&0xFF00);
+                new_pixel_bits|=((pixel_bits&0xFF)<<16);
+#else
+                new_pixel_bits=pixel_bits;
+#endif
+                ret.pixel_32_bits=new_pixel_bits;
             }
             return ret;
         };
