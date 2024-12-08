@@ -47,10 +47,10 @@ bool _loop()
                 }
                 return true;
             };
-            hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_acs2_0806,"Booting",0,0,w,draw_pixel,NULL);
-            hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_acs2_1206,"Booting",0,8,w,draw_pixel,NULL);
-            hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_acs2_1608,"Booting",0,8+12,w,draw_pixel,NULL);
-            hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_acs2_2416,"Booting",0,8+12+16,w,draw_pixel,NULL);
+            hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_ascii_0806,"Booting",0,0,w,draw_pixel,NULL);
+            hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_ascii_1206,"Booting",0,8,w,draw_pixel,NULL);
+            hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_ascii_1608,"Booting",0,8+12,w,draw_pixel,NULL);
+            hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_ascii_2416,"Booting",0,8+12+16,w,draw_pixel,NULL);
             hgui_driver_fill_rectangle(NULL,0,0,w,h,pixel);
         }
         if (i == 300)
@@ -75,7 +75,7 @@ bool _loop()
                         VRAM[i][j] = 0xFFFF0000;
                     }
                 }
-                hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_acs2_1206, banner, 0, 0, w, draw_pixel, NULL);
+                hgui_gui_dotfont_show_ascii_string(&hgui_gui_dotfont_ascii_1206, banner, 0, 0, w, draw_pixel, NULL);
                 hgui_driver_fill_rectangle(NULL, 0, 0, w, h, pixel);
             }
         }
