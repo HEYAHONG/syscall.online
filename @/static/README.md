@@ -47,7 +47,7 @@ wasm路径：<a href="/wasm/">wasm</a>。
 
 此处提供已编译好的二进制文件：<a href="assets/websocket_to_posix_proxy.zip">websocket_to_posix_proxy.zip</a>
 
-若为运行代理直接运行需要socket的程序，可能导致以下异常：
+若未运行代理直接运行需要socket的程序，可能导致以下异常：
 
 - 若启用了socket代理（PROXY_POSIX_SOCKET）时，使用socket进行网络操作时阻塞。表现为程序卡死。
 - 控制台中报***无法连接ws://localhost:58080***错误。
