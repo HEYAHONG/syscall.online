@@ -210,3 +210,13 @@ if(${WASM_BUILD})
     )
 endif()
 
+
+add_executable(HShell  ${CMAKE_CURRENT_SOURCE_DIR}/HShell/main.cpp)
+target_link_libraries(HShell ${PROJECT_NAME})
+if(${WASM_BUILD})
+    target_link_libraries(HShell  -sASYNCIFY)
+    INSTALL(FILES ${CMAKE_BINARY_DIR}/HShell.html ${CMAKE_BINARY_DIR}/HShell.data  ${CMAKE_BINARY_DIR}/HShell.js  ${CMAKE_BINARY_DIR}/HShell.wasm
+    DESTINATION /var/www/html/wasm/${PROJECT_NAME}/HShell/
+    )
+endif()
+

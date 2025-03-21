@@ -34,6 +34,7 @@ wasm路径：<a href="/wasm/">wasm</a>。
 - <a href="/wasm/HCPPGuiTest/HCPPGuiTest.html">HCPPGuiTest</a>:简易Gui测试。
 - <a href="/wasm/monochromescreen/monochromescreen.html">monochromescreen</a>:单色屏模拟。
 - <a href="/wasm/PDCurses/ModbusTCPClient/ModbusTCPClient.html">ModbusTCPClient</a>：Modbus TCP测试程序。需要多线程支持。启用了socket代理且需要套接字支持。
+- <a href="/wasm/PDCurses/HShell/HShell.html">HShell</a>：HShell组件测试程序。
 
 ### 多线程
 
