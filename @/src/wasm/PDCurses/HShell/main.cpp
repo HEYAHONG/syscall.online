@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <curses.h>
+#include <curspriv.h>
 #include "HCPPBox.h"
 #include "hbox.h"
 #include "time.h"
@@ -120,6 +121,11 @@ static int key_map(int old_ch)
     }
     break;
     }
+    if(ret >= 0x80)
+    {
+        //特殊按键默认不处理
+        ret=0;
+    }
     return ret;
 }
 
@@ -139,7 +145,11 @@ static int main_getchar(void)
     if(win!=NULL)
     {
         int ret=0;
-        return ((ret=key_map(wgetch(win)))!=ERR)?(ret&0xFFFF):0;
+        while(ret==0)
+        {
+            ret=(((ret=key_map(wgetch(win)))!=ERR)?(ret&0xFFFF):EOF);
+        }
+        return ret;
     }
     return 0;
 }
@@ -152,6 +162,23 @@ static int main_putchar(int ch)
     }
     if(win!=NULL && ch!='\r')
     {
+        if(ch=='\b')
+        {
+            //当位置为行首时，回到上一行末尾
+            int x=getcurx(win),y=getcury(win);
+            if(x==0 && y>1)
+            {
+                y--;
+                x=(getmaxx(win));
+                if(x>0 && y > 0)
+                {
+                    win->_curx = x;
+                    win->_cury = y;
+                }
+                wrefresh(win);
+                wsyncup(win);
+            }
+        }
         waddch(win,(ch&0xFFFF));
         wrefresh(win);
     }
