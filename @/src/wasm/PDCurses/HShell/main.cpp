@@ -69,7 +69,7 @@ int main()
     main_init();
     while(main_loop())
     {
-
+        wrefresh(win);
     }
     return 0;
 }
@@ -79,6 +79,7 @@ int main()
 
 //导入测试代码
 #include "../../../3rdparty/HCppBox/test/HShell/main.cpp"
+#include "../../../3rdparty/HCppBox/test/HShell/cmd_simmcs51.cpp"
 
 static const  struct
 {
@@ -175,12 +176,9 @@ static int main_putchar(int ch)
                     win->_curx = x;
                     win->_cury = y;
                 }
-                wrefresh(win);
-                wsyncup(win);
             }
         }
         waddch(win,(ch&0xFFFF));
-        wrefresh(win);
     }
     return ch;
 }
