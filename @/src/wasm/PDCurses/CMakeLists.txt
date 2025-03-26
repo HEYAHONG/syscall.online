@@ -214,7 +214,8 @@ file(GLOB HSHELL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/HShell/*.cpp)
 add_executable(HShell  ${HSHELL_FILES})
 target_link_libraries(HShell ${PROJECT_NAME})
 if(${WASM_BUILD})
-    target_link_libraries(HShell  -sASYNCIFY)
+	target_compile_options(HShell PUBLIC -fexceptions -sSUPPORT_LONGJMP=emscripten -sDISABLE_EXCEPTION_CATCHING=0)
+    target_link_libraries(HShell  -fexceptions -sSUPPORT_LONGJMP=emscripten -sDISABLE_EXCEPTION_CATCHING=0  -sASYNCIFY)
     INSTALL(FILES ${CMAKE_BINARY_DIR}/HShell.html ${CMAKE_BINARY_DIR}/HShell.data  ${CMAKE_BINARY_DIR}/HShell.js  ${CMAKE_BINARY_DIR}/HShell.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/HShell/
     )
