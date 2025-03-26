@@ -79,7 +79,6 @@ int main()
 
 //导入测试代码
 #include "../../../3rdparty/HCppBox/test/HShell/main.cpp"
-#include "../../../3rdparty/HCppBox/test/HShell/cmd_simmcs51.cpp"
 
 static const  struct
 {

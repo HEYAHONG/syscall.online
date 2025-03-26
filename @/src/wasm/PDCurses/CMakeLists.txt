@@ -210,8 +210,8 @@ if(${WASM_BUILD})
     )
 endif()
 
-
-add_executable(HShell  ${CMAKE_CURRENT_SOURCE_DIR}/HShell/main.cpp)
+file(GLOB HSHELL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/HShell/*.cpp)
+add_executable(HShell  ${HSHELL_FILES})
 target_link_libraries(HShell ${PROJECT_NAME})
 if(${WASM_BUILD})
     target_link_libraries(HShell  -sASYNCIFY)
