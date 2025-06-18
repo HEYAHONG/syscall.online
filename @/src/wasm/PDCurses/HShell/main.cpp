@@ -182,6 +182,49 @@ static int main_putchar(int ch)
     return ch;
 }
 
+#include H3RDPARTY_LIBQRENCODE_HEADER
+
+static void show_startup_banner()
+{
+    std::string banner;
+    {
+        QRcode *qr=QRcode_encodeString8bit("http://hyhsystem.cn",0,QR_ECLEVEL_M);
+        if(qr!=NULL)
+        {
+            for(size_t i=0; i<qr->width; i++)
+            {
+                for(size_t j=0; j<qr->width; j++)
+                {
+                    if((qr->data[i*qr->width+j]&0x01)!=0)
+                    {
+
+                        {
+                            banner+="⬛";
+                        }
+
+                    }
+                    else
+                    {
+
+                        {
+                            banner+="⬜";
+                        }
+                    }
+                }
+                banner+="\r\n";
+            }
+            banner+="\r\n";
+            QRcode_free(qr);
+        }
+    }
+    if(!banner.empty())
+    {
+        printf("%s",banner.c_str());
+    }
+    hshell_printf(NULL,"https://hyhsystem.cn\r\n");
+}
+
+
 static void main_init()
 {
     hshell_command_array_set(NULL,commands,sizeof(commands)/sizeof(commands[0]));
@@ -191,6 +234,7 @@ static void main_init()
         api.putchar=main_putchar;
         hshell_external_api_set(NULL,api);
     }
+    show_startup_banner();
 }
 
 static bool  main_loop()
