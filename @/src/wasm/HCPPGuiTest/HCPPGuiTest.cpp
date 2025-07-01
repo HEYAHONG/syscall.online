@@ -191,6 +191,10 @@ bool _loop()
             hgui_gui_rawimage_draw_color(&hrawimage_input_gray,(w-hrawimage_input_gray.width)/2,(h-hrawimage_input_gray.height)/2,draw_pixel,NULL);
             hgui_driver_fill_rectangle(NULL, 0, 0, w, h, pixel);
         }
+        if(i== 2000)
+        {
+            i=150;
+        }
         return true;
     }
 
