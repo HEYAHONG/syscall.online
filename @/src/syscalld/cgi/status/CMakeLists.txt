@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.10)
 #程序名称
 Set(PROJECT_NAME index.cgi)
 #主版本
