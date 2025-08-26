@@ -2,7 +2,9 @@
 
 主要一些服务器端物联网代码的测试代码,主要用于物联网测试。
 
-测试地址为：http://syscall.online
+测试地址为：[https://syscall.online](https://syscall.online)
+
+**注意：某些wasm特性需要在https访问(localhost测试时可不使用https)。**
 
 # 特点
 
