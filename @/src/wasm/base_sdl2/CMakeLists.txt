@@ -34,6 +34,8 @@ if(${WASM_BUILD})
 	set(CMAKE_EXECUTABLE_SUFFIX ".html")
 	add_compile_definitions(WASM_BUILD=1)
 	add_compile_options(-sUSE_SDL_TTF=2)
+	add_compile_definitions(HAVE_SDL2=1)
+	add_compile_options(-sUSE_SDL=2)
 endif()
 
 file(GLOB MAIN_CXX_C_FILES *.cpp  *.c *.h)
