@@ -27,7 +27,8 @@ if("${CMAKE_SYSTEM_NAME}" STREQUAL "Emscripten")
 	set(WASM_BUILD ON)
 	message(STATUS "This is a wasm build!")
 	add_compile_definitions(HAVE_SDL=1)
-	add_compile_options(-sUSE_SDL)
+	add_compile_options(-sUSE_SDL -pthread -sSHARED_MEMORY=1)
+	link_libraries(-sSHARED_MEMORY=1 -pthread -sALLOW_MEMORY_GROWTH=1 )
 else()
 	set(WASM_BUILD OFF)
 endif()
@@ -58,7 +59,7 @@ file(GLOB PDCURSES_SDL1_C_FILES ${CMAKE_CURRENT_SOURCE_DIR}/pdc*.c ${CMAKE_CURRE
 target_sources(PDCursesCore  PRIVATE ${PDCURSES_SDL1_C_FILES})
 if(${WASM_BUILD})
     #设定一些选项
-    target_link_libraries(PDCursesCore  -sWASM_BIGINT=1 -sUSE_SDL=1 -sUSE_SDL_TTF=1 )
+    target_link_libraries(PDCursesCore   -sWASM_BIGINT=1 -sUSE_SDL=1 -sUSE_SDL_TTF=1 )
 endif()
 
 
@@ -205,8 +206,8 @@ add_executable(ModbusTCPClient  ${CMAKE_CURRENT_SOURCE_DIR}/ModbusTCPClient/main
 target_link_libraries(ModbusTCPClient ${PROJECT_NAME})
 if(${WASM_BUILD})
     target_compile_definitions(ModbusTCPClient PUBLIC SOCKK=58080 )
-    target_link_libraries(ModbusTCPClient -lwebsocket -sPROXY_POSIX_SOCKETS=1 -pthread -sPROXY_TO_PTHREAD=1 )
-    INSTALL(FILES ${CMAKE_BINARY_DIR}/ModbusTCPClient.html ${CMAKE_BINARY_DIR}/ModbusTCPClient.data  ${CMAKE_BINARY_DIR}/ModbusTCPClient.js ${CMAKE_BINARY_DIR}/ModbusTCPClient.worker.js
+    target_link_libraries(ModbusTCPClient    -lwebsocket -sPROXY_POSIX_SOCKETS=1 -pthread -sPROXY_TO_PTHREAD=1 )
+    INSTALL(FILES ${CMAKE_BINARY_DIR}/ModbusTCPClient.wasm ${CMAKE_BINARY_DIR}/ModbusTCPClient.js ${CMAKE_BINARY_DIR}/ModbusTCPClient.html ${CMAKE_BINARY_DIR}/ModbusTCPClient.data
  ${CMAKE_BINARY_DIR}/ModbusTCPClient.wasm
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/ModbusTCPClient/
     )
@@ -217,8 +218,8 @@ add_executable(HShell  ${HSHELL_FILES})
 target_link_libraries(HShell ${PROJECT_NAME})
 if(${WASM_BUILD})
 	target_compile_options(HShell PUBLIC -fexceptions -sSUPPORT_LONGJMP=emscripten -sDISABLE_EXCEPTION_CATCHING=0)
-    target_link_libraries(HShell  -fexceptions -sSUPPORT_LONGJMP=emscripten -sDISABLE_EXCEPTION_CATCHING=0  -sASYNCIFY)
-    INSTALL(FILES ${CMAKE_BINARY_DIR}/HShell.html ${CMAKE_BINARY_DIR}/HShell.data  ${CMAKE_BINARY_DIR}/HShell.js  ${CMAKE_BINARY_DIR}/HShell.wasm
+    target_link_libraries(HShell     -fexceptions -sSUPPORT_LONGJMP=emscripten -sDISABLE_EXCEPTION_CATCHING=0  -sASYNCIFY)
+    INSTALL(FILES ${CMAKE_BINARY_DIR}/HShell.wasm ${CMAKE_BINARY_DIR}/HShell.js ${CMAKE_BINARY_DIR}/HShell.html ${CMAKE_BINARY_DIR}/HShell.data
     DESTINATION /var/www/html/wasm/${PROJECT_NAME}/HShell/
     )
 endif()
