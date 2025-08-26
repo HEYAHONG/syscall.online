@@ -13,4 +13,4 @@ VOLUME ["/var/www/html/static/","/usr/src"]
 # 暴露端口
 EXPOSE 80
 # 按照正常系统进行启动
-CMD [ "/usr/bin/systemd" ]
+CMD [ "/usr/lib/systemd/systemd" ]

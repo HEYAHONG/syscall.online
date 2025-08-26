@@ -44,7 +44,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 if(${WASM_BUILD})
 	#设定一些选项
-	target_link_libraries(${PROJECT_NAME}  -sWASM_BIGINT=1 -sUSE_SDL_TTF=2)
+	target_link_libraries(${PROJECT_NAME}  -sWASM_BIGINT=1 -sUSE_SDL=2 -sUSE_SDL_TTF=2)
 endif()
 
 include(FindPkgConfig)
@@ -52,19 +52,18 @@ include(FindPkgConfig)
 FIND_PACKAGE(Threads REQUIRED)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME}  ${CMAKE_THREAD_LIBS_INIT})
 
-include(FindPkgConfig)
-#sdl2
-find_package(sdl2 REQUIRED)
-if(${SDL2_SDL2main_FOUND})
-	TARGET_LINK_LIBRARIES(${PROJECT_NAME} SDL2::SDL2main)
-endif()
-if(${SDL2_SDL2test_FOUND})
-	TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SDL2TEST_LIBRARY})
-endif()
-TARGET_LINK_LIBRARIES(${PROJECT_NAME}  SDL2::SDL2)
-include_directories(${SDL2_INCLUDE_DIRS})
-
 if(NOT ${WASM_BUILD})
+	include(FindPkgConfig)
+	#sdl2
+	find_package(sdl2 REQUIRED)
+	if(${SDL2_SDL2main_FOUND})
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME} SDL2::SDL2main)
+	endif()
+	if(${SDL2_SDL2test_FOUND})
+		TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${SDL2TEST_LIBRARY})
+	endif()
+	TARGET_LINK_LIBRARIES(${PROJECT_NAME}  SDL2::SDL2)
+	target_include_directories(${PROJECT_NAME}  PUBLIC ${SDL2_INCLUDE_DIRS})
 	#sdl2_image
 	find_package(sdl2_image REQUIRED)
 	if(${SDL2_image_FOUND})
@@ -96,6 +95,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/font common_font)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_font)
 
 #添加3rdparty/HCppBox
+set(HCPPBOX_USE_PURE_CPLUSPLUS ON)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/HCppBox HCppBox EXCLUDE_FROM_ALL)
 #启用HCppBox、HRC
 hcppbox_enable(${PROJECT_NAME})
