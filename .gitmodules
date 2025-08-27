@@ -5,3 +5,6 @@
 	path = @/src/3rdparty/PDCurses
 	url = ../../HEYAHONG/PDCurses
 	branch = HYH
+[submodule "proxy.wasm/src/3rdparty/HCppBox"]
+	path = proxy.wasm/src/3rdparty/HCppBox
+	url = https://github.com/HEYAHONG/HCppBox

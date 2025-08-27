@@ -1,0 +1,2 @@
+#!/bin/bash
+exec /usr/local/bin/websocket_to_posix_proxy 58080
