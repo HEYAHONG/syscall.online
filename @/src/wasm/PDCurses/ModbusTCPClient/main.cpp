@@ -70,11 +70,16 @@ static void socket_init()
     uint16_t readyState = 0;
     do
     {
+        if(readyState == 3)
+        {
+            //连接失败,尝试公网上的桥（不安全）
+            bridgeSocket = emscripten_init_websocket_to_posix_socket_bridge("wss://proxy.wasm.syscall.online");
+        }
         emscripten_websocket_get_ready_state(bridgeSocket, &readyState);
         emscripten_thread_sleep(1000);
         printf("wait for socket ready!\r\n");
     }
-    while (readyState == 0);
+    while (readyState != 1);
 #else
     HCPPSocketInit();
 #endif // __EMSCRIPTEN__
