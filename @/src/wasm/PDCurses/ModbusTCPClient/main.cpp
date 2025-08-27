@@ -65,19 +65,26 @@ static void socket_init()
 {
 #ifdef __EMSCRIPTEN__
     static EMSCRIPTEN_WEBSOCKET_T bridgeSocket = 0;
-    bridgeSocket = emscripten_init_websocket_to_posix_socket_bridge("ws://localhost:58080");
+    const char * proxy_url[]=
+    {
+        "ws://localhost:58080",
+        "ws://localhost:65081",
+        "wss://proxy.wasm.syscall.online"
+    };
+    size_t proxy_index=0;
+    bridgeSocket = emscripten_init_websocket_to_posix_socket_bridge(proxy_url[proxy_index++%(sizeof(proxy_url)/sizeof(proxy_url[0]))]);
     // Synchronously wait until connection has been established.
     uint16_t readyState = 0;
     do
     {
         if(readyState == 3)
         {
-            //连接失败,尝试公网上的桥（不安全）
-            bridgeSocket = emscripten_init_websocket_to_posix_socket_bridge("wss://proxy.wasm.syscall.online");
+            //连接失败,尝试下一个
+            bridgeSocket = emscripten_init_websocket_to_posix_socket_bridge(proxy_url[proxy_index++%(sizeof(proxy_url)/sizeof(proxy_url[0]))]);
         }
         emscripten_websocket_get_ready_state(bridgeSocket, &readyState);
         emscripten_thread_sleep(1000);
-        printf("wait for socket ready!\r\n");
+        printf("wait for websocket(%s) ready!\r\n",proxy_url[(proxy_index-1)%(sizeof(proxy_url)/sizeof(proxy_url[0]))]);
     }
     while (readyState != 1);
 #else
