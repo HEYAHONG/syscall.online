@@ -14,6 +14,8 @@
 - 采用make作为主要构建工具
 - 支持WebAssembly(采用[emscripten](https://emscripten.org/))
 - 支持WebSocket(采用[libwebsockets](https://libwebsockets.org/)库)
+- 采用`s6`作为多服务非特权容器服务管理工具
+- 采用`libevent`作为网络服务库
 
 # 网站
 
