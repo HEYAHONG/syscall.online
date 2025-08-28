@@ -61,17 +61,32 @@ static void main_loop()
         wrefresh(win);
     }
 }
+
+#ifdef __EMSCRIPTEN__
+static EMSCRIPTEN_WEBSOCKET_T bridgeSocket = NULL;
+static const char * proxy_url[]=
+{
+    "ws://localhost:58080",
+    "ws://localhost:65081",
+    "wss://proxy.wasm.syscall.online"
+};
+static size_t proxy_index=0;
+static void socket_check(void)
+{
+    if(bridgeSocket!=NULL)
+    {
+        uint16_t readyState = 0;
+        emscripten_websocket_get_ready_state(bridgeSocket, &readyState);
+        if(readyState == 3)
+        {
+            bridgeSocket = emscripten_init_websocket_to_posix_socket_bridge(proxy_url[proxy_index%(sizeof(proxy_url)/sizeof(proxy_url[0]))]);
+        }
+    }
+}
+#endif
 static void socket_init()
 {
 #ifdef __EMSCRIPTEN__
-    static EMSCRIPTEN_WEBSOCKET_T bridgeSocket = 0;
-    const char * proxy_url[]=
-    {
-        "ws://localhost:58080",
-        "ws://localhost:65081",
-        "wss://proxy.wasm.syscall.online"
-    };
-    size_t proxy_index=0;
     bridgeSocket = emscripten_init_websocket_to_posix_socket_bridge(proxy_url[proxy_index++%(sizeof(proxy_url)/sizeof(proxy_url[0]))]);
     // Synchronously wait until connection has been established.
     uint16_t readyState = 0;
@@ -157,12 +172,11 @@ int main()
 {
     std::thread main_thread(pthread_main);
     main_thread.detach();
-#ifndef __EMSCRIPTEN__
     while(true)
     {
+        socket_check();
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-#endif // __EMSCRIPTEN__
     return 0;
 }
 
