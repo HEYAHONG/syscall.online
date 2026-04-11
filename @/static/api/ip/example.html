@@ -3,11 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <title>IP地址显示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .ip-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .ip-title {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .ip-display {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1976d2;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+        .refresh-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .refresh-btn:hover {
+            background-color: #3367d6;
+        }
+        .loading {
+            color: #666;
+        }
+    </style>
 </head>
 <body>
-    <h1>您的公网IP地址</h1>
-    <p>您的IP是: <span id="ip-display">加载中...</span></p>
-    <button onclick="refreshIP()">刷新IP</button>
+    <div class="ip-container">
+        <h1 class="ip-title">您的公网IP地址</h1>
+        <p>您的IP是:</p>
+        <div id="ip-display" class="ip-display">加载中...</div>
+        <button class="refresh-btn" onclick="refreshIP()">刷新IP</button>
+    </div>
     
     <!-- 嵌入IP API脚本 -->
     <script src="./ip-api.js"></script>
