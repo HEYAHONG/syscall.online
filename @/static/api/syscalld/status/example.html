@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh_CN">
+<head>
+    <meta charset="UTF-8">
+    <title>syscalld 状态监控</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .status-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .status-item:last-child {
+            border-bottom: none;
+        }
+        .status-key {
+            font-weight: bold;
+            color: #333;
+        }
+        .status-value {
+            color: #666;
+            text-align: right;
+        }
+        .status-error {
+            color: #d32f2f;
+            text-align: center;
+            padding: 20px;
+        }
+        .refresh-btn {
+            background-color: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .refresh-btn:hover {
+            background-color: #3367d6;
+        }
+    </style>
+</head>
+<body>
+    <h1>syscalld 状态监控</h1>
+    <p>系统状态信息如下：</p>
+    <div id="status-display">
+        <div class="status-error">加载中...</div>
+    </div>
+    <button class="refresh-btn" onclick="refreshStatus()">刷新状态</button>
+    
+    <!-- 嵌入syscalld状态API脚本 -->
+    <script src="./status-api.js"></script>
+</body>
+</html>
