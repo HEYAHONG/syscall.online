@@ -1,0 +1,324 @@
+/* Custom CSS for block-based documentation layout */
+:root {
+  --primary-color: #4285f4;
+  --secondary-color: #34495e;
+  --success-color: #4caf50;
+  --warning-color: #ff9800;
+  --error-color: #f44336;
+  --light-bg: #f8f9fa;
+  --dark-bg: #34495e;
+  --border-radius: 8px;
+  --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  --transition: all 0.3s ease;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f5f7fa;
+  margin: 0;
+  padding: 0;
+}
+
+/* Full width navigation bar */
+.app-nav {
+  width: 100%;
+  background-color: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 0;
+  margin: 0;
+  padding: 15px 20px;
+  position: relative;
+  z-index: 100;
+}
+
+.app-nav ul {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.app-nav li {
+  margin: 0 10px;
+}
+
+.app-nav a {
+  color: var(--secondary-color);
+  font-weight: 500;
+  padding: 8px 15px;
+  border-radius: 4px;
+  transition: var(--transition);
+  display: block;
+}
+
+.app-nav a:hover, 
+.app-nav a.active {
+  color: var(--primary-color);
+  background-color: rgba(66, 133, 244, 0.1);
+}
+
+/* Content area */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Block styling for content sections */
+.markdown-section {
+  background-color: white;
+  border-radius: var(--border-radius);
+  padding: 30px;
+  box-shadow: var(--box-shadow);
+  margin: 20px 0;
+}
+
+/* Header styling with sub-block organization */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--dark-bg);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  border-bottom: 2px solid var(--primary-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Sub-block organization for multi-level headers */
+h2 {
+  background-color: rgba(66, 133, 244, 0.05);
+  padding: 15px 20px;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  margin-top: 2rem;
+}
+
+h3 {
+  background-color: rgba(66, 133, 244, 0.03);
+  padding: 10px 15px;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  margin-top: 1.5rem;
+  border-left: 3px solid var(--primary-color);
+}
+
+h4, h5, h6 {
+  background-color: rgba(66, 133, 244, 0.02);
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  margin-top: 1rem;
+  border-left: 2px solid var(--primary-color);
+}
+
+/* Section organization */
+section {
+  margin-bottom: 30px;
+  background-color: white;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+  border: 1px solid #eee;
+}
+
+section header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 15px 20px;
+  margin-bottom: 0;
+}
+
+section header h2 {
+  color: white;
+  margin: 0;
+  font-size: 1.4em;
+}
+
+section main {
+  padding: 20px;
+}
+
+/* Full width footer/background */
+footer {
+  width: 100%;
+  background-color: var(--dark-bg);
+  color: white;
+  text-align: center;
+  padding: 30px 20px;
+  margin-top: 40px;
+  clear: both;
+}
+
+/* Code blocks styling */
+pre, code {
+  background-color: var(--light-bg);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  font-size: 0.9em;
+  margin: 15px 0;
+}
+
+/* Table styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background-color: white;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+}
+
+table th,
+table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+table th {
+  background-color: var(--primary-color);
+  color: white;
+  font-weight: 600;
+}
+
+table tr:hover {
+  background-color: rgba(66, 133, 244, 0.05);
+}
+
+/* List styling */
+ul, ol {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+li {
+  margin: 8px 0;
+}
+
+/* Link styling */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--secondary-color);
+  text-decoration: underline;
+}
+
+/* Button styling */
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: var(--transition);
+  box-shadow: var(--box-shadow);
+}
+
+button:hover {
+  background-color: #3367d6;
+  transform: translateY(-2px);
+}
+
+/* Alert boxes */
+.alert {
+  padding: 15px;
+  border-radius: var(--border-radius);
+  margin: 20px 0;
+  border-left: 4px solid var(--primary-color);
+}
+
+.alert-success {
+  background-color: rgba(76, 175, 80, 0.1);
+  border-left-color: var(--success-color);
+}
+
+.alert-warning {
+  background-color: rgba(255, 152, 0, 0.1);
+  border-left-color: var(--warning-color);
+}
+
+.alert-error {
+  background-color: rgba(244, 67, 54, 0.1);
+  border-left-color: var(--error-color);
+}
+
+/* API endpoint styling */
+.endpoint {
+  background-color: var(--light-bg);
+  border-left: 4px solid var(--primary-color);
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  font-family: monospace;
+}
+
+.endpoint-title {
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 5px;
+}
+
+/* Image styling */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  margin: 15px 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .content {
+    padding: 10px;
+  }
+  
+  .markdown-section {
+    padding: 20px;
+  }
+  
+  .app-nav {
+    padding: 10px;
+  }
+  
+  .app-nav li {
+    margin: 5px;
+  }
+  
+  .app-nav a {
+    padding: 6px 10px;
+    font-size: 14px;
+  }
+  
+  h1, h2, h3 {
+    padding: 10px;
+  }
+}
+
+/* Enhanced section styling */
+main {
+  padding: 20px;
+}
+
+/* Proper sub-block spacing */
+h2 + h3,
+h3 + h4,
+h4 + h5,
+h5 + h6 {
+  margin-top: 1rem;
+}
+
+/* Add bottom margin for better spacing */
+.markdown-section > *:last-child {
+  margin-bottom: 0;
+}
