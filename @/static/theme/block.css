@@ -10,6 +10,31 @@
   --border-radius: 8px;
   --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   --transition: all 0.3s ease;
+  
+  /* Different colors for different heading levels */
+  --h1-color: #2c3e50;
+  --h1-bg: #e3f2fd;
+  --h1-border: #4285f4;
+  
+  --h2-color: #34495e;
+  --h2-bg: #fff8e1;
+  --h2-border: #ffc107;
+  
+  --h3-color: #34495e;
+  --h3-bg: #e8f5e9;
+  --h3-border: #4caf50;
+  
+  --h4-color: #34495e;
+  --h4-bg: #fff3e0;
+  --h4-border: #ff9800;
+  
+  --h5-color: #34495e;
+  --h5-bg: #fce4ec;
+  --h5-border: #e91e63;
+  
+  --h6-color: #34495e;
+  --h6-bg: #f3e5f5;
+  --h6-border: #9c27b0;
 }
 
 body {
@@ -61,11 +86,12 @@ body {
   background-color: rgba(66, 133, 244, 0.1);
 }
 
-/* Content area */
+/* Full width content area */
 .content {
-  max-width: 1200px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 /* Block styling for content sections */
@@ -75,43 +101,70 @@ body {
   padding: 30px;
   box-shadow: var(--box-shadow);
   margin: 20px 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-/* Header styling with sub-block organization */
+/* Header styling with different colors for each level */
 h1, h2, h3, h4, h5, h6 {
   color: var(--dark-bg);
   margin-top: 2rem;
   margin-bottom: 1rem;
+  font-weight: 600;
 }
 
 h1 {
-  border-bottom: 2px solid var(--primary-color);
-  padding-bottom: 0.5rem;
+  background-color: var(--h1-bg);
+  color: var(--h1-color);
+  padding: 20px 25px;
+  border-radius: var(--border-radius) var(--border-radius) 0 0;
   margin-bottom: 1.5rem;
+  border-left: 4px solid var(--h1-border);
 }
 
-/* Sub-block organization for multi-level headers */
 h2 {
-  background-color: rgba(66, 133, 244, 0.05);
+  background-color: var(--h2-bg);
+  color: var(--h2-color);
   padding: 15px 20px;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   margin-top: 2rem;
+  border-left: 4px solid var(--h2-border);
 }
 
 h3 {
-  background-color: rgba(66, 133, 244, 0.03);
-  padding: 10px 15px;
+  background-color: var(--h3-bg);
+  color: var(--h3-color);
+  padding: 12px 15px;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
   margin-top: 1.5rem;
-  border-left: 3px solid var(--primary-color);
+  border-left: 4px solid var(--h3-border);
 }
 
-h4, h5, h6 {
-  background-color: rgba(66, 133, 244, 0.02);
+h4 {
+  background-color: var(--h4-bg);
+  color: var(--h4-color);
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  margin-top: 1.2rem;
+  border-left: 3px solid var(--h4-border);
+}
+
+h5 {
+  background-color: var(--h5-bg);
+  color: var(--h5-color);
   padding: 8px 12px;
   border-radius: var(--border-radius);
   margin-top: 1rem;
-  border-left: 2px solid var(--primary-color);
+  border-left: 2px solid var(--h5-border);
+}
+
+h6 {
+  background-color: var(--h6-bg);
+  color: var(--h6-color);
+  padding: 6px 10px;
+  border-radius: var(--border-radius);
+  margin-top: 0.8rem;
+  border-left: 1px solid var(--h6-border);
 }
 
 /* Section organization */
