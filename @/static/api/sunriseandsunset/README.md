@@ -47,3 +47,6 @@
 curl syscall.online/api/sunriseandsunset/
 ```
 
+# 示例
+
+<a href="example.html" target="_blank">example.html </a>
