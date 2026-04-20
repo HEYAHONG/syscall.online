@@ -10,3 +10,5 @@ syscalld为守护进程，文档路径为<a href="api/syscalld/">syscalld</a>。
 ## 杂项接口
 
 - <a href="api/ip">ip/</a>:返回一些IP信息。
+- <a href="api/sunriseandsunset">sunriseandsunset/</a>: 查询日出日落时间。
+
