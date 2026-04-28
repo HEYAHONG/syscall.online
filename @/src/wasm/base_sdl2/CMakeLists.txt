@@ -94,6 +94,10 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_fsloader)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/font common_font)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_font)
 
+#添加common_shell库文件
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/shell common_shell)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_shell_gui)
+
 #添加3rdparty/HCppBox
 set(HCPPBOX_USE_PURE_CPLUSPLUS ON)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/HCppBox HCppBox EXCLUDE_FROM_ALL)

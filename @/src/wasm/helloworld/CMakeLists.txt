@@ -54,6 +54,10 @@ TARGET_LINK_LIBRARIES(${PROJECT_NAME}  ${CMAKE_THREAD_LIBS_INIT})
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/fsloader common_fsloader EXCLUDE_FROM_ALL)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_fsloader)
 
+#添加common_shell库文件
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/shell common_shell)
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_shell_console)
+
 #添加3rdparty/HCppBox
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/HCppBox HCppBox EXCLUDE_FROM_ALL)
 #启用HCppBox、HRC

@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title></title>
+  <style>
+    /* Reset & Base */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d0d0d;
+      --surface: #141414;
+      --border: #2a2a2a;
+      --accent: #0099ff;
+      --accent2: #00d4aa;
+      --text: #e0e0e0;
+      --text-dim: #666;
+      --term-bg: #0a0a0a;
+      --term-text: #00ff88;
+      --term-err: #ff4444;
+      --term-warn: #ffaa00;
+      --btn-bg: #1e1e1e;
+      --btn-hover: #2a2a2a;
+      --radius: 6px;
+      --toolbar-h: 48px;
+    }
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Loading Screen */
+    #loading-screen {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      z-index: 9999; gap: 24px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .loader-logo {
+      font-size: 2.2rem; font-weight: 700; letter-spacing: 2px;
+      color: var(--accent); text-shadow: 0 0 20px rgba(0,153,255,0.4);
+    }
+    .loader-spinner {
+      width: 48px; height: 48px;
+      border: 3px solid var(--border); border-top-color: var(--accent);
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader-bar-wrap { width: 260px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+    .loader-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width 0.2s; }
+    .loader-status { font-size: 0.78rem; color: var(--text-dim); }
+
+    /* Main Layout */
+    #main-ui {
+      display: none; flex-direction: column; height: 100vh; position: relative;
+    }
+    #main-ui.visible { display: flex; }
+
+    /* Tabs */
+    #tabs {
+      display: flex;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      padding: 10px 20px;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color 0.15s, border-bottom-color 0.15s;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+    /* Tab Contents */
+    #tab-contents {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+    .tab-content {
+      position: absolute; inset: 0;
+      display: none;
+    }
+    .tab-content.active { display: flex; }
+
+    /* Canvas Tab */
+    #canvas-tab {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      padding: 8px;
+    }
+    #canvas {
+      display: block;
+      background: #000;
+    }
+    .canvas-wrapper {
+      border: 1px solid var(--accent);
+      display: inline-block;
+    }
+
+    /* Console Tab */
+    #console-tab {
+      flex-direction: row;
+      overflow: hidden;
+    }
+    .panel {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--term-bg);
+    }
+    .panel-left {
+      flex: 0 0 50%;
+      border-right: 1px solid var(--border);
+    }
+    .panel-right {
+      flex: 1;
+    }
+    .panel-divider {
+      width: 5px;
+      background: var(--border);
+      cursor: col-resize;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .panel-divider:hover,
+    .panel-divider.dragging {
+      background: var(--accent);
+    }
+    .terminal {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 10px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .terminal::-webkit-scrollbar { width: 6px; }
+    .terminal::-webkit-scrollbar-track { background: transparent; }
+    .terminal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* Terminal Lines */
+    .term-line { display: block; }
+    .term-line.stdout { color: var(--term-text); }
+    .term-line.stderr { color: var(--term-err); }
+    .term-line.warn { color: var(--term-warn); }
+    .term-line.info { color: var(--accent); }
+    .term-line.system { color: var(--text-dim); font-style: italic; }
+    .term-cursor {
+      display: inline-block; width: 7px; height: 13px;
+      background: var(--term-text); vertical-align: text-bottom;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+    /* Toolbar (floating) */
+    #toolbar-trigger {
+      position: absolute; top: 0; left: 0; right: 0; height: 12px;
+      cursor: pointer; z-index: 30;
+      background: linear-gradient(to bottom, rgba(20,20,20,0.5), transparent);
+    }
+    #toolbar {
+      position: absolute; top: 0; left: 0; right: 0;
+      height: var(--toolbar-h);
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 6px; padding: 0 12px;
+      flex-shrink: 0; z-index: 25;
+      transform: translateY(-100%); transition: transform 0.25s ease-out;
+    }
+    #toolbar.visible { transform: translateY(0); }
+    .toolbar-title { font-size: 0.85rem; font-weight: 600; color: var(--accent); letter-spacing: 1px; margin-right: 4px; white-space: nowrap; }
+    .toolbar-sep { width: 1px; height: 24px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 12px; background: var(--btn-bg);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      color: var(--text); font-size: 0.78rem; font-weight: 500;
+      cursor: pointer; transition: background 0.15s, border-color 0.15s;
+      white-space: nowrap; user-select: none;
+    }
+    .btn:hover { background: var(--btn-hover); border-color: #444; }
+    .btn.active { border-color: var(--accent); color: var(--accent); }
+.btn.disabled { opacity: 0.35; pointer-events: none; cursor: default; }
+    .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .toolbar-spacer { flex: 1; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
+    .status-dot.running { background: var(--accent); box-shadow: 0 0 6px var(--accent); animation: pulse 1.5s ease infinite; }
+    .status-dot.error { background: var(--term-err); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    #status-text { font-size: 0.72rem; color: var(--text-dim); }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .toolbar-title { display: none; }
+      .btn { padding: 5px 8px; }
+      .btn span { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loading-screen">
+  <div class="loader-logo">加载中…</div>
+  <div class="loader-spinner"></div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loader-bar"></div></div>
+  <div class="loader-status" id="loader-status">Initializing…</div>
+</div>
+
+<!-- Main UI -->
+<div id="main-ui">
+  <!-- Tabs -->
+  <div id="tabs">
+    <button class="tab-btn" data-tab="canvas">gui</button>
+    <button class="tab-btn active" data-tab="console">console</button>
+  </div>
+
+  <!-- Tab Contents -->
+  <div id="tab-contents">
+    <!-- Canvas Tab -->
+    <div id="canvas-tab" class="tab-content">
+      <div class="canvas-wrapper">
+        <canvas id="canvas" oncontextmenu="event.preventDefault()" aria-label="Canvas"></canvas>
+      </div>
+    </div>
+
+    <!-- Console Tab -->
+    <div id="console-tab" class="tab-content active">
+      <div class="panel panel-left">
+        <div class="terminal" id="terminal-wasm"></div>
+      </div>
+      <div class="panel-divider" id="panel-divider"></div>
+      <div class="panel panel-right">
+        <div class="terminal" id="terminal-log"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div id="toolbar-trigger"></div>
+  <div id="toolbar">
+    <span class="toolbar-title"></span>
+    <div class="toolbar-sep"></div>
+    <button class="btn" id="btn-playpause" onclick="togglePause()" title="暂停">
+      <svg id="icon-pause" viewBox="0 0 16 16" fill="currentColor"><rect x="3" y="2" width="4" height="12"/><rect x="9" y="2" width="4" height="12"/></svg>
+      <svg id="icon-play" viewBox="0 0 16 16" fill="currentColor" style="display:none"><path d="M3 2l10 6-10 6V2z"/></svg>
+      <span id="playpause-text">暂停</span>
+    </button>
+    <div class="toolbar-sep"></div>
+    <button class="btn" id="btn-fullscreen" onclick="goFullscreen()" title="全屏">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4"/></svg><span>全屏</span>
+    </button>
+    <div class="toolbar-spacer"></div>
+    <div class="status-dot" id="status-dot"></div>
+    <span id="status-text">Ready</span>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+// Default tab for this file (canvas or console)
+const DEFAULT_TAB = 'console';
+
+// Terminal factory
+function createTerminal(terminalId) {
+  const el = () => document.getElementById(terminalId);
+  let lineCount = 0;
+  const MAX = 5000;
+  function _append(text, type) {
+    const term = el(); if (!term) return;
+    const cur = term.querySelector('.term-cursor'); if (cur) cur.remove();
+    const frag = document.createDocumentFragment();
+    String(text).split('\n').forEach((line, i) => {
+      if (i && line === '') return;
+      const s = document.createElement('span'); s.className = 'term-line ' + type; s.textContent = line;
+      frag.appendChild(s); frag.appendChild(document.createTextNode('\n')); lineCount++;
+    });
+    term.appendChild(frag);
+    while (lineCount > MAX) { const f = term.querySelector('.term-line'); if (f) { f.nextSibling?.remove(); f.remove(); lineCount--; } else break; }
+    const c = document.createElement('span'); c.className = 'term-cursor'; term.appendChild(c);
+    term.scrollTop = term.scrollHeight;
+  }
+  return {
+    print: (m) => _append(m, 'stdout'),
+    printErr: (m) => _append(m, 'stderr'),
+    printWarn: (m) => _append(m, 'warn'),
+    printInfo: (m) => _append(m, 'info'),
+    printSystem: (m) => _append(m, 'system'),
+  };
+}
+
+const TerminalWasm = createTerminal('terminal-wasm');
+const TerminalLog = createTerminal('terminal-log');
+
+// Loader
+const Loader = (() => {
+  function setProgress(pct, msg) {
+    const b = document.getElementById('loader-bar'); if (b) b.style.width = Math.min(100,Math.max(0,pct)) + '%';
+    const s = document.getElementById('loader-status'); if (s && msg) s.textContent = msg;
+  }
+  function finish() {
+    setProgress(100, 'Ready');
+    setTimeout(() => {
+      document.getElementById('loading-screen')?.classList.add('hidden');
+      document.getElementById('main-ui')?.classList.add('visible');
+      TerminalLog.printSystem('Module loaded.');
+      bindToolbarHover();
+    }, 350);
+  }
+  return { setProgress, finish };
+})();
+
+// Tab switching
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabName);
+  });
+  document.querySelectorAll('.tab-content').forEach(content => {
+    content.classList.toggle('active', content.id === tabName + '-tab');
+  });
+  const fsBtn = document.getElementById('btn-fullscreen');
+  if (fsBtn) fsBtn.classList.toggle('disabled', tabName !== 'canvas');
+}
+
+// Toolbar hover
+function bindToolbarHover() {
+  const trigger = document.getElementById('toolbar-trigger');
+  const toolbar = document.getElementById('toolbar');
+  if (!trigger || !toolbar) return;
+  trigger.addEventListener('mouseenter', () => toolbar.style.transform = 'translateY(0)');
+  trigger.addEventListener('mouseleave', () => toolbar.style.transform = '');
+  toolbar.addEventListener('mouseenter', () => toolbar.style.transform = 'translateY(0)');
+  toolbar.addEventListener('mouseleave', () => toolbar.style.transform = '');
+}
+
+// Panel divider drag
+(function() {
+  const divider = document.getElementById('panel-divider');
+  const leftPanel = document.querySelector('#console-tab .panel-left');
+  if (!divider || !leftPanel) return;
+  let dragging = false;
+  divider.addEventListener('mousedown', (e) => {
+    dragging = true;
+    divider.classList.add('dragging');
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+  });
+  document.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    const container = document.getElementById('console-tab');
+    const rect = container.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const w = rect.width;
+    const minW = 100;
+    const ratio = Math.min(1 - minW / w, Math.max(minW / w, x / w));
+    leftPanel.style.flex = '0 0 ' + (ratio * 100) + '%';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    divider.classList.remove('dragging');
+    document.body.style.userSelect = '';
+    document.body.style.cursor = '';
+  });
+})();
+
+function setStatus(state, text) {
+  const d = document.getElementById('status-dot'), t = document.getElementById('status-text');
+  if (d) d.className = 'status-dot ' + (state||'');
+  if (t && text !== undefined) t.textContent = text;
+}
+
+function goFullscreen() { document.getElementById('canvas')?.requestFullscreen?.(); }
+
+// Module
+var Module = {
+  canvas: (() => {
+    const c = document.getElementById('canvas');
+    if (!c) return document.createElement('canvas');
+    c.addEventListener('webglcontextlost', (e) => { e.preventDefault(); });
+    c.addEventListener('webglcontextrestored', () => {});
+    return c;
+  })(),
+  print: (m) => TerminalWasm.print(m),
+  printErr: (m) => TerminalLog.printErr(m),
+  setStatus: (t) => {
+    if (!t) return;
+    const m = t.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+    if (m) Loader.setProgress((+m[2]/+m[4])*100, m[1].trim()); else Loader.setProgress(10, t);
+  },
+  totalDependencies: 0,
+  monitorRunDependencies: (l) => {
+    Module.totalDependencies = Math.max(Module.totalDependencies, l);
+    Loader.setProgress(Module.totalDependencies ? ((Module.totalDependencies-l)/Module.totalDependencies)*90 : 10, l ? 'Loading…' : 'Finalizing…');
+  },
+  onRuntimeInitialized: () => { Loader.finish(); setStatus('running', '运行中'); },
+};
+
+let _paused = false;
+function togglePause() {
+  _paused = !_paused;
+  const iconPause = document.getElementById('icon-pause');
+  const iconPlay = document.getElementById('icon-play');
+  const text = document.getElementById('playpause-text');
+  const btn = document.getElementById('btn-playpause');
+  if (iconPause && iconPlay) {
+    iconPause.style.display = _paused ? 'none' : '';
+    iconPlay.style.display = _paused ? '' : 'none';
+  }
+  if (text) text.textContent = _paused ? '运行' : '暂停';
+  if (btn) btn.title = _paused ? '运行' : '暂停';
+  if (_paused) { Module.pauseMainLoop?.(); } else { Module.resumeMainLoop?.(); }
+  setStatus(_paused ? '' : 'running', _paused ? '已暂停' : '运行中');
+}
+
+// Tab click handlers
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  switchTab(DEFAULT_TAB);
+});
+
+window.addEventListener('error', (e) => { TerminalLog.printErr('[Error] ' + e.message); setStatus('error'); });
+window.addEventListener('unhandledrejection', (e) => { TerminalLog.printErr('[Unhandled] ' + (e.reason?.message||e.reason)); });
+</script>
+{{{ SCRIPT }}}
+</body>
+</html>
