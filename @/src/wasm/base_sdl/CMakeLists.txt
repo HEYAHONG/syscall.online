@@ -103,6 +103,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../common/shell common_shell)
 TARGET_LINK_LIBRARIES(${PROJECT_NAME} common_shell_gui)
 
 #添加3rdparty/HCppBox
+set(HCPPBOX_USE_PURE_CPLUSPLUS TRUE)
 add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/HCppBox HCppBox EXCLUDE_FROM_ALL)
 #启用HCppBox、HRC
 hcppbox_enable(${PROJECT_NAME})
