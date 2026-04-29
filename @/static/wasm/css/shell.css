@@ -1,0 +1,183 @@
+/**
+ * shell.css — Emscripten shell layout styles
+ *
+ * xterm.js manages its own internal DOM and rendering.
+ * These rules cover: container sizing, scrollbar, loading screen, tabs, canvas, toolbar.
+ */
+
+/* ─── Terminal containers ──────────────────────────────────────────────────── */
+
+.terminal {
+  /* Fill the entire panel */
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+/* Let xterm's inner viewport control its own overflow */
+.terminal .xterm-viewport {
+  overflow-y: auto !important;
+}
+
+/* Scrollbar — matches dark theme */
+.terminal .xterm-viewport::-webkit-scrollbar {
+  width: 6px;
+}
+.terminal .xterm-viewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+.terminal .xterm-viewport::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 3px;
+}
+
+/* ─── Loading screen ──────────────────────────────────────────────────────── */
+
+#loading-screen {
+  position: fixed; inset: 0;
+  background: #0d0d0d;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  z-index: 9999; gap: 24px;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+#loading-screen.hidden {
+  opacity: 0; visibility: hidden; pointer-events: none;
+}
+
+.loader-logo {
+  font-size: 2.2rem; font-weight: 700; letter-spacing: 2px;
+  color: #0099ff; text-shadow: 0 0 20px rgba(0,153,255,0.4);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.loader-spinner {
+  width: 48px; height: 48px;
+  border: 3px solid #2a2a2a; border-top-color: #0099ff;
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-bar-wrap { width: 260px; height: 4px; background: #2a2a2a; border-radius: 2px; overflow: hidden; }
+.loader-bar {
+  height: 100%; width: 0%;
+  background: linear-gradient(90deg, #0099ff, #00d4aa);
+  border-radius: 2px; transition: width 0.2s;
+}
+.loader-status { font-size: 0.78rem; color: #666; }
+
+/* ─── Main layout ─────────────────────────────────────────────────────────── */
+
+#main-ui {
+  display: none; flex-direction: column; height: 100vh; position: relative;
+}
+#main-ui.visible { display: flex; }
+
+/* Tabs */
+#tabs {
+  display: flex; background: #141414;
+  border-bottom: 1px solid #2a2a2a; flex-shrink: 0;
+}
+.tab-btn {
+  padding: 10px 20px; background: transparent; border: none;
+  color: #666; font-size: 0.85rem; font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-bottom-color 0.15s;
+}
+.tab-btn:hover { color: #e0e0e0; }
+.tab-btn.active { color: #0099ff; border-bottom-color: #0099ff; }
+
+/* Tab content */
+#tab-contents { flex: 1; overflow: hidden; position: relative; }
+.tab-content { position: absolute; inset: 0; display: none; }
+.tab-content.active { display: flex; }
+
+/* Canvas tab */
+#canvas-tab {
+  flex-direction: column; align-items: center; justify-content: center;
+  padding: 8px; background: #111;
+}
+#canvas { display: block; background: #000; }
+.canvas-wrapper {
+  border: 1px solid #0099ff; display: inline-block;
+  box-shadow: 0 0 12px rgba(0,153,255,0.2);
+}
+
+/* Console tab — two panels side by side */
+#console-tab {
+  flex-direction: row; overflow: hidden;
+  background: #0a0a0a;
+}
+.panel {
+  display: flex; flex-direction: column; overflow: hidden;
+  background: #0a0a0a;
+}
+.panel-left  { flex: 0 0 50%; border-right: 1px solid #2a2a2a; }
+.panel-right { flex: 1; }
+
+/* Draggable divider */
+.panel-divider {
+  width: 5px; background: #2a2a2a; cursor: col-resize; flex-shrink: 0;
+  transition: background 0.15s;
+}
+.panel-divider:hover,
+.panel-divider.dragging { background: #0099ff; }
+
+/* ─── Toolbar ─────────────────────────────────────────────────────────────── */
+
+#toolbar-trigger {
+  position: absolute; top: 0; left: 0; right: 0; height: 12px;
+  cursor: pointer; z-index: 30;
+  background: linear-gradient(to bottom, rgba(20,20,20,0.5), transparent);
+}
+#toolbar {
+  position: absolute; top: 0; left: 0; right: 0; height: 48px;
+  background: #141414; border-bottom: 1px solid #2a2a2a;
+  display: flex; align-items: center; gap: 6px; padding: 0 12px;
+  flex-shrink: 0; z-index: 25;
+  transform: translateY(-100%); transition: transform 0.25s ease-out;
+}
+#toolbar.visible,
+#toolbar:hover { transform: translateY(0); }
+
+.toolbar-title {
+  font-size: 0.85rem; font-weight: 600; color: #0099ff;
+  letter-spacing: 1px; white-space: nowrap;
+}
+.toolbar-sep  { width: 1px; height: 24px; background: #2a2a2a; margin: 0 4px; flex-shrink: 0; }
+.toolbar-spacer { flex: 1; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 5px 12px; background: #1e1e1e;
+  border: 1px solid #2a2a2a; border-radius: 6px;
+  color: #e0e0e0; font-size: 0.78rem; font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap; user-select: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.btn:hover { background: #2a2a2a; border-color: #444; }
+.btn.active { border-color: #0099ff; color: #0099ff; }
+.btn.disabled { opacity: 0.35; pointer-events: none; }
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.status-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #666; flex-shrink: 0;
+}
+.status-dot.running {
+  background: #0099ff; box-shadow: 0 0 6px #0099ff;
+  animation: pulse 1.5s ease infinite;
+}
+.status-dot.error { background: #ff4444; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+#status-text { font-size: 0.72rem; color: #666; }
+
+/* ─── Responsive ──────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .toolbar-title { display: none; }
+  .btn { padding: 5px 8px; }
+  .btn span { display: none; }
+}
