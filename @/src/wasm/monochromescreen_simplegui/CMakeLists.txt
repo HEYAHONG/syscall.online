@@ -34,6 +34,7 @@ if(${WASM_BUILD})
 	set(CMAKE_EXECUTABLE_SUFFIX ".html")
 	add_compile_definitions(WASM_BUILD=1)
 	add_compile_definitions(HAVE_SDL=1)
+	add_compile_definitions(HSIMPLEGUI_BKGCLR=0xFF00F2FA)
 	add_compile_options(-sUSE_SDL)
 endif()
 
